@@ -87,6 +87,8 @@ test('Godot branches derive counts and ordered learning path from the catalogue'
  await page.locator('.m-start-learning').click();
  await expect(page.locator('.m-path-stats strong').first()).toHaveText('13 курсов');
  await expect(page.locator('.m-path-card')).toHaveCount(13);
+ await expect(page.locator('[data-course=godot-core-1] a')).toHaveCount(1);
+ await expect(page.locator('.m-card-arrow')).toHaveCount(0);
  await expect(page.locator('.m-path-card .m-card-title').first()).toHaveText('Godot с нуля');
  await expect(page.locator('.m-path-card .m-card-title').last()).toHaveText('Дипломный проект');
  await page.evaluate(()=>window.MasteryApp.setCourseProgress('godot-core-1',12));
@@ -99,7 +101,9 @@ test('Godot branches derive counts and ordered learning path from the catalogue'
  await expect(page.locator('.m-course-card')).toHaveCount(3);
  await page.locator('[data-filter=query]').fill('слотов');
  await expect(page.locator('.m-course-card')).toHaveCount(1);
- await page.locator('.m-card-title').click();
+ await expect(page.locator('.m-course-card a')).toHaveCount(1);
+ await expect(page.locator('.m-card-arrow')).toHaveCount(0);
+ await page.locator('.m-course-copy>p').click();
  await expect(page.locator('#masteryPage h1')).toHaveText('Инвентарь');
  await expect(page.locator('.m-curriculum-empty')).toContainText('Уроки курса ещё готовятся');
  await page.locator('[data-action=plan]').click();

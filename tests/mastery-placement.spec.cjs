@@ -57,8 +57,9 @@ test('filtered and capstone previews preserve other records and restore the layo
  expect((await order(page)).slice(0,2)).toEqual(['aseprite','blender']);
  const after=await snapshot(page);expect([...after.technologies].sort((a,b)=>a.order-b.order).filter(t=>t.category!=='art').map(t=>t.id)).toEqual(others);
  await page.goto('/#/mastery/godot/core');const coreBefore=await snapshot(page);
+ const firstWidth=await page.locator('[data-course=godot-core-1]').evaluate(el=>el.getBoundingClientRect().width);
  await pickUp(page,'godot-core-13');
- expect(await page.locator('.m-sort-placeholder').evaluate(el=>getComputedStyle(el).gridColumn)).toBe('1 / -1');
+ expect(await page.locator('.m-sort-placeholder').evaluate(el=>el.getBoundingClientRect().width)).toBeCloseTo(firstWidth,0);
  const first=page.locator('[data-course=godot-core-1]');await first.scrollIntoViewIfNeeded();const rect=await first.boundingBox();
  await moveTo(page,rect.x+10,rect.y+70);
  await page.evaluate(()=>{window.originalStorageSet=Storage.prototype.setItem;Storage.prototype.setItem=()=>{throw Error('quota');};});
