@@ -2,6 +2,7 @@ const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const catalogue=page=>page.evaluate(()=>window.MasteryCatalog.snapshot());
 async function manager(page,tab='courses'){
+ await page.locator('[data-mode=admin]').click();
  await page.locator('[data-action=manage]').click();
  await page.locator(`[data-admin-tab="${tab}"]`).click();
 }
@@ -9,6 +10,7 @@ async function addTechnology(page,title){
  await page.locator('[data-admin=new]').click();
  await page.locator('#masteryEditForm [name=title]').fill(title);
  await page.locator('#masteryEditForm [name=description]').fill('Технология, добавленная вручную.');
+ await page.locator('#masteryEditForm [name=published]').check();
  await page.locator('#masteryEditForm button[type=submit]').click();
  await expect(page.locator('#masteryManagerMessage')).toHaveText('Изменения сохранены.');
  return (await catalogue(page)).technologies.find(t=>t.title===title).id;
@@ -24,6 +26,7 @@ async function addCourse(page,title,technologyId,branch){
  await form.locator('[name=durationMinutes]').fill('125');
  await form.locator('[name=outcomes]').fill('Первый навык\nВторой навык');
  await form.locator('[name=url]').fill('https://example.com/my-course');
+ await form.locator('[name=published]').check();
  await form.locator('button[type=submit]').click();
  await expect(page.locator('#masteryManagerMessage')).toHaveText('Изменения сохранены.');
  return (await catalogue(page)).courses.find(c=>c.title===title).id;
@@ -36,7 +39,9 @@ test('home entry opens technology catalogue; Blender and Aseprite are separate b
  await expect(page.locator('.m-tech-card')).toHaveCount(13);
  for(const id of ['blender','aseprite']){
   const card=page.locator(`[data-technology="${id}"]`);
-  await card.locator('.m-card-title').click();
+  await expect(card.locator('a')).toHaveCount(1);
+  await expect(card.locator('a.m-card-title,.m-card-arrow')).toHaveCount(0);
+  await card.locator('.m-tech-link').click();
   await expect(page.locator('.m-branch-card')).toHaveCount(2);
   await expect(page).toHaveURL(new RegExp('#/mastery/'+id+'$'));
   await page.goBack();
@@ -166,9 +171,10 @@ test('JSON export/import is portable, rejects unsafe or dangling records atomica
  await page.locator('#masteryImport').setInputFiles({name:'catalog.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
  await expect(page.locator('#masteryManagerMessage')).toHaveText('Каталог импортирован.');
  await page.locator('[data-admin-tab=technologies]').click();
- page.once('dialog',d=>d.accept());
+ page.once('dialog',d=>d.dismiss());
  await page.locator('[data-admin=delete][data-id=godot]').click();
- await expect(page.locator('#masteryManagerMessage')).toContainText('Сначала перенесите');
+ expect((await catalogue(page)).technologies.some(t=>t.id==='godot')).toBeTruthy();
+ expect(await page.evaluate(()=>{try{MasteryCatalog.deleteTechnology('godot');}catch(error){return error.message;}})).toContain('Сначала перенесите');
  await page.locator('[data-admin=close]').click();
  await page.reload();
  await expect(page.locator('[data-technology=godot] .m-card-title')).toHaveText('Godot — обновлённый');
@@ -182,6 +188,8 @@ test('unpublished records disappear from public routes and empty branches remain
  await page.locator('[name=published]').uncheck();
  await page.locator('#masteryEditForm button[type=submit]').click();
  await page.locator('[data-admin=close]').click();
+ await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('2 курса');
+ await page.locator('[data-mode=student]').click();
  await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('1 курс');
  await page.goto('/#/mastery/blender/applied/'+hiddenId);
  await expect(page.locator('#masteryPage h1')).toHaveText('Ветка не найдена');

@@ -16,6 +16,13 @@ window.MasteryCatalog = (() => {
     if(/^[a-z][a-z0-9+.-]*:/i.test(url)&&!/^https?:\/\//i.test(url))throw Error('Для ссылок разрешены только HTTP и HTTPS.');
     return url;
   }
+  function safeImage(value) {
+    if(typeof value==='string'&&value.startsWith('data:')) {
+      if(value.length>550000||!/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/.test(value))throw Error('Загрузите PNG, JPEG, WebP или GIF размером до 400 КБ.');
+      return value;
+    }
+    return safeUrl(value);
+  }
   function identifier(value) {const id=plain(value,80);if(!/^[a-z0-9][a-z0-9_-]*$/.test(id))throw Error('ID должен содержать латинские буквы, цифры, дефис или подчёркивание.');return id;}
   const number=(value,fallback,max)=>Number.isFinite(Number(value))?Math.max(0,Math.min(max,Math.round(Number(value)))):fallback;
   function validate(input) {
@@ -26,7 +33,7 @@ window.MasteryCatalog = (() => {
     const technologies=input.technologies.map((t,i)=>{
       if(!t||typeof t!=='object')throw Error('Некорректная технология.');
       const id=identifier(t.id);if(ids.has(id))throw Error('Повторяется ID технологии: '+id);ids.add(id);
-      return {id,title:required(t.title,'Название технологии'),description:plain(t.description),category:Object.hasOwn(categories,t.category)?t.category:'tools',tags:(Array.isArray(t.tags)?t.tags:[]).slice(0,10).map(v=>plain(v,40)).filter(Boolean),image:safeUrl(t.image)||'assets/mastery/tools.svg',icon:icons.includes(t.icon)?t.icon:'tools',color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#40bfff',order:number(t.order,i,100000),published:t.published!==false};
+      return {id,title:required(t.title,'Название технологии'),description:plain(t.description),category:Object.hasOwn(categories,t.category)?t.category:'tools',tags:(Array.isArray(t.tags)?t.tags:[]).slice(0,10).map(v=>plain(v,40)).filter(Boolean),image:safeImage(t.image)||'assets/mastery/tools.svg',icon:icons.includes(t.icon)?t.icon:'tools',iconUrl:safeImage(t.iconUrl),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#40bfff',order:number(t.order,i,100000),published:t.published!==false};
     });
     const courseIds=new Set();
     const courses=input.courses.map((c,i)=>{
@@ -34,7 +41,7 @@ window.MasteryCatalog = (() => {
       const id=identifier(c.id);if(courseIds.has(id))throw Error('Повторяется ID курса: '+id);courseIds.add(id);
       const technologyId=identifier(c.technologyId);if(!ids.has(technologyId))throw Error('Для курса «'+plain(c.title)+'» не найдена технология '+technologyId+'.');
       if(!Object.hasOwn(branches,c.branch))throw Error('Ветка курса должна быть core или applied.');
-      return {id,technologyId,branch:c.branch,title:required(c.title,'Название курса'),description:plain(c.description),level:Object.hasOwn(levels,c.level)?c.level:'beginner',topic:plain(c.topic,60)||'Практика',lessonCount:number(c.lessonCount,0,3000),durationMinutes:number(c.durationMinutes,0,60000),order:number(c.order,i,100000),published:c.published!==false,capstone:c.capstone===true,image:safeUrl(c.image),url:safeUrl(c.url),outcomes:(Array.isArray(c.outcomes)?c.outcomes:[]).slice(0,30).map(v=>plain(v,500)).filter(Boolean)};
+      return {id,technologyId,branch:c.branch,title:required(c.title,'Название курса'),description:plain(c.description),level:Object.hasOwn(levels,c.level)?c.level:'beginner',topic:plain(c.topic,60)||'Практика',lessonCount:number(c.lessonCount,0,3000),durationMinutes:number(c.durationMinutes,0,60000),order:number(c.order,i,100000),published:c.published!==false,capstone:c.capstone===true,image:safeImage(c.image),icon:icons.includes(c.icon)?c.icon:'',iconUrl:safeImage(c.iconUrl),url:safeUrl(c.url),outcomes:(Array.isArray(c.outcomes)?c.outcomes:[]).slice(0,30).map(v=>plain(v,500)).filter(Boolean)};
     });
     return {version:1,technologies,courses};
   }
@@ -48,15 +55,30 @@ window.MasteryCatalog = (() => {
     window.dispatchEvent(new Event('mastery:catalog-changed'));
   }
   function upsert(collection,record) {const next=structuredClone(catalog),index=next[collection].findIndex(v=>v.id===record.id);if(index<0)next[collection].push(record);else next[collection][index]=record;commit(next);}
-  function remove(collection,id) {
-    if(collection==='technologies'&&catalog.courses.some(c=>c.technologyId===id))throw Error('Сначала перенесите или удалите курсы этой технологии.');
-    const next=structuredClone(catalog);next[collection]=next[collection].filter(v=>v.id!==id);commit(next);
+  function remove(collection,id,{cascade=false}={}) {
+    if(collection==='technologies'&&!cascade&&catalog.courses.some(c=>c.technologyId===id))throw Error('Сначала перенесите или удалите курсы этой технологии.');
+    const next=structuredClone(catalog);
+    next[collection]=next[collection].filter(v=>v.id!==id);
+    if(collection==='technologies'&&cascade)next.courses=next.courses.filter(c=>c.technologyId!==id);
+    commit(next);
+  }
+  function move(collection,id,targetId) {
+    const next=structuredClone(catalog),record=next[collection].find(v=>v.id===id),target=next[collection].find(v=>v.id===targetId);
+    if(!record||!target||id===targetId)return false;
+    if(collection==='courses'&&(record.technologyId!==target.technologyId||record.branch!==target.branch))throw Error('Порядок меняется внутри одной ветки технологии.');
+    const group=next[collection].filter(v=>collection==='technologies'||(v.technologyId===record.technologyId&&v.branch===record.branch)).sort((a,b)=>a.order-b.order||a.title.localeCompare(b.title,'ru'));
+    const from=group.findIndex(v=>v.id===id),to=group.findIndex(v=>v.id===targetId);
+    group.splice(from,1);group.splice(to,0,record);
+    group.forEach((v,i)=>v.order=i+1);
+    commit(next);
+    return true;
   }
   function newId(prefix) {return prefix+'-'+crypto.randomUUID().slice(0,8);}
-  return {levels,branches,categories,icons,safeUrl,validate,newId,
+  return {levels,branches,categories,icons,safeUrl,safeImage,validate,newId,
     snapshot:()=>structuredClone(catalog),recoveryMessage:()=>recovery,
     saveTechnology:record=>upsert('technologies',record),saveCourse:record=>upsert('courses',record),
-    deleteTechnology:id=>remove('technologies',id),deleteCourse:id=>remove('courses',id),
+    deleteTechnology:(id,options)=>remove('technologies',id,options),deleteCourse:id=>remove('courses',id),
+    moveTechnology:(id,targetId)=>move('technologies',id,targetId),moveCourse:(id,targetId)=>move('courses',id,targetId),
     importCatalog:commit,
     reset:()=>commit(window.MASTERY_SEED)
   };

@@ -1,19 +1,21 @@
 "use strict";
 (() => {
   const store=window.MasteryCatalog, page=document.querySelector('#masteryPage');
+  const iconLabels={godot:'Godot',gamemaker:'GameMaker',rpgmaker:'RPG Maker',blender:'Blender',aseprite:'Aseprite',unity:'Unity',web:'JavaScript',csharp:'C#',pixelart:'Пиксель-арт',audio:'Музыка и звук',tools:'Инструменты',design:'Геймдизайн',ui:'Интерфейсы'};
   const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const icon=(name,cls='')=>`<svg class="icon ${cls}" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
   const notify=text=>window.announce(text);
   const routeFor=(tech='',branch='',course='')=>'#/mastery'+[tech,branch,course].filter(Boolean).map(v=>'/'+encodeURIComponent(v)).join('');
   const safeRead=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}};
   let layout=safeRead('indieforge.mastery.layout','grid');if(!['grid','list'].includes(layout))layout='grid';
+  let adminMode=safeRead('indieforge.mastery.admin',false)===true;
   let plan=safeRead('indieforge.mastery.plan',[]);if(!Array.isArray(plan))plan=[];
   let progress=safeRead('indieforge.mastery.progress',{});if(!progress||typeof progress!=='object'||Array.isArray(progress))progress={};
   let catalog=store.snapshot(), current={kind:'catalog'}, manager={tab:'courses',query:'',tech:'',editing:null};
   const filters=new Map();
   const ordered=items=>[...items].sort((a,b)=>a.order-b.order||a.title.localeCompare(b.title,'ru'));
-  const visibleTechs=()=>ordered(catalog.technologies.filter(t=>t.published));
-  const coursesFor=(id,branch)=>ordered(catalog.courses.filter(c=>c.published&&c.technologyId===id&&(!branch||c.branch===branch)));
+  const visibleTechs=()=>ordered(catalog.technologies.filter(t=>adminMode||t.published));
+  const coursesFor=(id,branch)=>ordered(catalog.courses.filter(c=>(adminMode||c.published)&&c.technologyId===id&&(!branch||c.branch===branch)));
   const completedLessons=c=>Math.max(0,Math.min(c.lessonCount,Number(progress[c.id])||0));
   const percent=c=>c.lessonCount?Math.round(completedLessons(c)/c.lessonCount*100):0;
   const plural=(n,forms)=>forms[n%100>=11&&n%100<=14?2:n%10===1?0:n%10>=2&&n%10<=4?1:2];
@@ -24,7 +26,7 @@
   function logo(t,large=false) {
     const branded=['godot','gamemaker','blender','aseprite','unity','web','csharp'].includes(t.icon);
     const fallback={rpgmaker:'home',pixelart:'gem',audio:'play',tools:'refresh',design:'game',ui:'monitor'}[t.icon]||'tree';
-    return `<span class="m-logo ${large?'large':''}" style="--brand:${t.color}" aria-hidden="true">${branded?`<span class="m-brand-icon" style="mask-image:url('assets/mastery/logo-${t.icon}.svg');-webkit-mask-image:url('assets/mastery/logo-${t.icon}.svg')"></span>`:icon(fallback)}</span>`;
+    return `<span class="m-logo ${large?'large':''}" style="--brand:${t.color}" aria-hidden="true">${t.iconUrl?`<img class="m-custom-icon" src="${esc(t.iconUrl)}" alt="">`:branded?`<span class="m-brand-icon" style="mask-image:url('assets/mastery/logo-${t.icon}.svg');-webkit-mask-image:url('assets/mastery/logo-${t.icon}.svg')"></span>`:icon(fallback)}</span>`;
   }
   function breadcrumbs(t,branch,course) {
     return `<nav class="m-breadcrumbs" aria-label="Путь по древу мастерства"><a href="${routeFor()}">Древо мастерства</a>${t?`<span>›</span><a href="${routeFor(t.id)}">${esc(t.title)}</a>`:''}${branch?`<span>›</span><a href="${routeFor(t.id,branch)}">${store.branches[branch]}</a>`:''}${course?`<span>›</span><span aria-current="page">${esc(course.title)}</span>`:''}</nav>`;
@@ -33,7 +35,21 @@
     const image=course?.image||t?.image||'assets/hero.png';
     return `<header class="m-hero ${t?'m-tech-hero':''}" style="--hero:${esc('url('+JSON.stringify(image)+')')}">${t?breadcrumbs(t,branch,course):'<span class="m-kicker">ИНДИ КУЗНИЦА · ТВОЙ ПУТЬ В ГЕЙМДЕВЕ</span>'}<div class="m-hero-main">${t?logo(t,true):`<span class="m-tree-emblem">${icon('tree')}</span>`}<div><h1 tabindex="-1">${esc(title)}</h1><p>${esc(description)}</p></div></div>${t?tags(t.tags):'<span class="m-hero-motto">Разные инструменты.<br>Одна цель — твои игры.</span>'}</header>`;
   }
-  const utility=()=>`<div class="m-utility"><a href="${routeFor()}">${icon('tree')} Все технологии</a><button type="button" data-action="manage">${icon('code')} Управление каталогом</button></div>`;
+  function utility() {
+    return `<div class="m-utility"><a href="${routeFor()}">${icon('tree')} Все технологии</a><div class="m-utility-actions">${adminMode?`<button type="button" data-action="manage">${icon('code')} Управление каталогом</button>`:''}<div class="m-view-switch m-mode-switch" role="group" aria-label="Режим просмотра"><button type="button" data-action="view-mode" data-mode="student" aria-pressed="${!adminMode}">Ученик</button><button type="button" data-action="view-mode" data-mode="admin" aria-pressed="${adminMode}">Администратор</button></div></div></div>${adminMode?`<div class="m-admin-banner"><span>Режим администратора · скрытые записи видны только в этом режиме</span><button class="m-button" type="button" data-action="add-record" data-collection="${current.kind==='catalog'?'technologies':'courses'}">＋ ${current.kind==='catalog'?'Добавить технологию':'Добавить курс'}</button>${current.tech?`<button class="m-button" type="button" data-card-action="edit" data-collection="${current.course?'courses':'technologies'}" data-id="${current.course?.id||current.tech.id}">Редактировать ${current.course?'курс':'технологию'}</button>${statusBadge(current.course||current.tech,current.course?current.tech:null)}`:''}</div>`:''}`;
+  }
+  function statusBadge(record,parent=null) {
+    if(!adminMode)return '';
+    const hidden=!record.published||parent?.published===false;
+    const label=!record.published?'Скрыто · черновик':parent?.published===false?'Скрыто вместе с технологией':'Опубликовано';
+    return `<span class="m-status ${hidden?'m-status-hidden':'m-status-published'}">${icon(hidden?'eye-off':'eye')}${label}</span>`;
+  }
+  const canReorder=()=>adminMode&&(!['catalog','applied'].includes(current.kind)||filterState().sort==='recommended');
+  function cardControls(record,collection,parent=null) {
+    if(!adminMode)return '';
+    const reorder=canReorder();
+    return `<div class="m-card-admin">${statusBadge(record,parent)}<button class="m-drag-handle" type="button" draggable="${reorder}" data-drag-id="${record.id}" data-collection="${collection}" ${reorder?'':'disabled'} aria-label="Переместить ${esc(record.title)}" title="Перетащите карточку. С клавиатуры: Alt + стрелки.">${icon('grip')}</button><details class="m-card-menu"><summary aria-label="Действия: ${esc(record.title)}">⋯</summary><div class="m-card-menu-items"><button type="button" data-card-action="edit" data-collection="${collection}" data-id="${record.id}">Редактировать карточку</button><button type="button" data-card-action="visibility" data-collection="${collection}" data-id="${record.id}">${record.published?'Скрыть':'Опубликовать'}</button><button type="button" data-card-action="move-up" data-collection="${collection}" data-id="${record.id}" ${reorder?'':'disabled'}>Переместить выше</button><button type="button" data-card-action="move-down" data-collection="${collection}" data-id="${record.id}" ${reorder?'':'disabled'}>Переместить ниже</button><button class="m-danger" type="button" data-card-action="delete" data-collection="${collection}" data-id="${record.id}">Удалить ${collection==='technologies'?'технологию':'курс'}</button></div></details></div>`;
+  }
   const branchTabs=(t,branch)=>`<nav class="m-branch-tabs" aria-label="Ветки технологии"><a class="${branch==='core'?'selected':''}" ${branch==='core'?'aria-current="page"':''} href="${routeFor(t.id,'core')}">${icon('book')} Основные курсы</a><a class="${branch==='applied'?'selected':''}" ${branch==='applied'?'aria-current="page"':''} href="${routeFor(t.id,'applied')}">${icon('game')} Прикладные курсы</a></nav>`;
   function filterState() {
     const key=current.kind+':'+(current.tech?.id||'');
@@ -43,15 +59,15 @@
   function toolbar(applied=false) {
     const state=filterState();
     const options=applied?[...new Set(coursesFor(current.tech.id,'applied').map(c=>c.topic))].map(v=>[v,v]):Object.entries(store.categories);
-    return `<div class="m-toolbar"><div class="m-view-switch" role="group" aria-label="Вид каталога"><button type="button" data-layout="grid" aria-pressed="${layout==='grid'}">${icon('grid')} Сетка</button><button type="button" data-layout="list" aria-pressed="${layout==='list'}">${icon('list')} Список</button></div><label class="m-select"><span class="m-sr">${applied?'Тема курса':'Категория технологий'}</span><select data-filter="category"><option value="all">${applied?'Все темы':'Все технологии'}</option>${options.map(([value,label])=>`<option value="${esc(value)}" ${value===state.category?'selected':''}>${esc(label)}</option>`).join('')}</select></label><label class="m-select"><span class="m-sr">Уровень</span><select data-filter="level"><option value="all">Все уровни</option>${Object.entries(store.levels).map(([value,label])=>`<option value="${value}" ${value===state.level?'selected':''}>${label}</option>`).join('')}</select></label><label class="m-select"><span class="m-sr">Сортировка</span><select data-filter="sort"><option value="recommended" ${state.sort==='recommended'?'selected':''}>По рекомендации</option><option value="title" ${state.sort==='title'?'selected':''}>По названию</option><option value="${applied?'duration':'courses'}" ${['duration','courses'].includes(state.sort)?'selected':''}>${applied?'Сначала короткие':'По числу курсов'}</option></select></label><label class="m-local-search">${icon('search')}<input type="search" data-filter="query" value="${esc(state.query)}" placeholder="${applied?'Поиск прикладных курсов…':'Поиск технологий…'}" aria-label="${applied?'Поиск прикладных курсов':'Поиск технологий'}"></label></div><div class="m-results-meta"><span id="masteryResultCount" role="status" aria-live="polite"></span><button type="button" data-action="reset-filters">Сбросить фильтры</button></div>`;
+    return `<div class="m-toolbar"><div class="m-view-switch" role="group" aria-label="Вид каталога"><button type="button" data-layout="grid" aria-pressed="${layout==='grid'}">${icon('grid')} Сетка</button><button type="button" data-layout="list" aria-pressed="${layout==='list'}">${icon('list')} Список</button></div><label class="m-select"><span class="m-sr">${applied?'Тема курса':'Категория технологий'}</span><select data-filter="category"><option value="all">${applied?'Все темы':'Все технологии'}</option>${options.map(([value,label])=>`<option value="${esc(value)}" ${value===state.category?'selected':''}>${esc(label)}</option>`).join('')}</select></label><label class="m-select"><span class="m-sr">Уровень</span><select data-filter="level"><option value="all">Все уровни</option>${Object.entries(store.levels).map(([value,label])=>`<option value="${value}" ${value===state.level?'selected':''}>${label}</option>`).join('')}</select></label><label class="m-select"><span class="m-sr">Сортировка</span><select data-filter="sort"><option value="recommended" ${state.sort==='recommended'?'selected':''}>Порядок автора</option><option value="title" ${state.sort==='title'?'selected':''}>По названию</option><option value="${applied?'duration':'courses'}" ${['duration','courses'].includes(state.sort)?'selected':''}>${applied?'Сначала короткие':'По числу курсов'}</option></select></label><label class="m-local-search">${icon('search')}<input type="search" data-filter="query" value="${esc(state.query)}" placeholder="${applied?'Поиск прикладных курсов…':'Поиск технологий…'}" aria-label="${applied?'Поиск прикладных курсов':'Поиск технологий'}"></label></div><div class="m-results-meta"><span id="masteryResultCount" role="status" aria-live="polite"></span><button type="button" data-action="reset-filters">Сбросить фильтры</button></div>${adminMode?'<p class="m-reorder-note" role="status"></p>':''}`;
   }
   function technologyCard(t) {
     const core=coursesFor(t.id,'core').length,applied=coursesFor(t.id,'applied').length;
-    return `<article class="m-tech-card" data-technology="${t.id}" style="--brand:${t.color}"><a class="m-tech-art" href="${routeFor(t.id)}" tabindex="-1" aria-hidden="true"><img src="${esc(t.image)}" alt="" loading="lazy"></a><div class="m-tech-info">${logo(t)}<div class="m-tech-copy"><a href="${routeFor(t.id)}" class="m-card-title">${esc(t.title)}</a><p>${esc(t.description)}</p>${tags(t.tags)}</div></div><div class="m-tech-category">${esc(store.categories[t.category])}</div><div class="m-tech-branches"><a class="m-core-count" href="${routeFor(t.id,'core')}">${icon('book')}<span><strong>${core}</strong><small>Основные курсы</small></span></a><a class="m-applied-count" href="${routeFor(t.id,'applied')}">${icon('folder')}<span><strong>${applied}</strong><small>Прикладные курсы</small></span></a><a class="m-card-arrow" href="${routeFor(t.id)}" aria-label="Открыть ${esc(t.title)}">${icon('arrow')}</a></div></article>`;
+    return `<article class="m-tech-card ${adminMode?'m-editable-card':''} ${!t.published?'m-hidden-card':''}" data-technology="${t.id}" data-reorder-id="${t.id}" data-collection="technologies" style="--brand:${t.color}"><a class="m-tech-link" href="${routeFor(t.id)}" aria-label="Открыть технологию ${esc(t.title)}"><div class="m-tech-art"><img src="${esc(t.image)}" alt="" loading="lazy"></div><div class="m-tech-info">${logo(t)}<div class="m-tech-copy"><h2 class="m-card-title">${esc(t.title)}</h2><p>${esc(t.description)}</p>${tags(t.tags)}</div></div><div class="m-tech-category">${esc(store.categories[t.category])}</div><div class="m-tech-branches"><span class="m-core-count">${icon('book')}<span><strong>${core}</strong><small>Основные курсы</small></span></span><span class="m-applied-count">${icon('folder')}<span><strong>${applied}</strong><small>Прикладные курсы</small></span></span></div></a>${cardControls(t,'technologies')}</article>`;
   }
   function courseCard(c,t,core=false,index=0) {
     const pct=percent(c),url=routeFor(t.id,c.branch,c.id),image=c.image||t.image;
-    return `<article class="m-course-card ${core?'m-path-card':''} ${pct===100?'m-course-complete':''} ${core&&c.capstone?'m-capstone':''}" data-course="${c.id}"><a class="m-course-art" href="${url}" tabindex="-1" aria-hidden="true"><img src="${esc(image)}" alt="" loading="lazy"></a>${core?`<span class="m-path-number">${index+1}</span>`:''}<div class="m-course-copy"><a class="m-card-title" href="${url}">${esc(c.title)}</a><p>${esc(c.description)}</p>${!core?tags(['Мини-проект',store.levels[c.level],c.topic]):''}<div class="m-course-meta"><span>${icon('book')}${lessonCount(c.lessonCount)}</span><span>${icon('refresh')}${duration(c.durationMinutes)}</span></div>${core?`<div class="m-course-progress"><progress value="${pct}" max="100" aria-label="Прогресс курса ${esc(c.title)}"></progress><span>${pct}%</span></div>`:''}</div><a class="m-card-arrow" href="${url}" aria-label="Подробнее: ${esc(c.title)}">${icon('arrow')}</a></article>`;
+    return `<article class="m-course-card ${adminMode?'m-editable-card':''} ${!c.published||!t.published?'m-hidden-card':''} ${core?'m-path-card':''} ${pct===100?'m-course-complete':''} ${core&&c.capstone?'m-capstone':''}" data-course="${c.id}" data-reorder-id="${c.id}" data-collection="courses"><a class="m-course-art" href="${url}" tabindex="-1" aria-hidden="true"><img src="${esc(image)}" alt="" loading="lazy"><span class="m-course-logo">${logo({...t,icon:c.icon||t.icon,iconUrl:c.iconUrl||(c.icon?'':t.iconUrl)})}</span></a>${core?`<span class="m-path-number">${index+1}</span>`:''}<div class="m-course-copy"><a class="m-card-title" href="${url}">${esc(c.title)}</a><p>${esc(c.description)}</p>${!core?tags(['Мини-проект',store.levels[c.level],c.topic]):''}<div class="m-course-meta"><span>${icon('book')}${lessonCount(c.lessonCount)}</span><span>${icon('refresh')}${duration(c.durationMinutes)}</span></div>${core?`<div class="m-course-progress"><progress value="${pct}" max="100" aria-label="Прогресс курса ${esc(c.title)}"></progress><span>${pct}%</span></div>`:''}</div><a class="m-card-arrow" href="${url}" aria-label="Подробнее: ${esc(c.title)}">${icon('arrow')}</a>${cardControls(c,'courses',t)}</article>`;
   }
   function renderResults() {
     const results=page.querySelector('#masteryResults');if(!results)return;
@@ -60,6 +76,8 @@
     if(state.sort==='title')items.sort((a,b)=>a.title.localeCompare(b.title,'ru'));
     if(state.sort==='courses')items.sort((a,b)=>coursesFor(b.id).length-coursesFor(a.id).length);
     if(state.sort==='duration')items.sort((a,b)=>a.durationMinutes-b.durationMinutes);
+    const note=page.querySelector('.m-reorder-note');
+    if(note)note.textContent=canReorder()?'Перетаскивайте карточки за значок ⠿, чтобы изменить порядок.':'Для перетаскивания выберите сортировку «Порядок автора».';
     results.className='m-results '+(layout==='list'?'m-list':'m-grid');
     results.innerHTML=items.length?items.map(item=>current.kind==='catalog'?technologyCard(item):courseCard(item,current.tech)).join(''):`<div class="m-empty">${icon('search')}<h2>Ничего не найдено</h2><p>Попробуйте другой запрос или уберите часть фильтров.</p><button class="m-button" data-action="reset-filters">Сбросить фильтры</button></div>`;
     page.querySelector('#masteryResultCount').textContent=(current.kind==='catalog'?'Технологий: ':'Курсов: ')+items.length;
@@ -75,7 +93,7 @@
   }
   function renderCourse(c,t) {
     const inPlan=plan.includes(c.id);
-    return hero({title:c.title,description:c.description,t,branch:c.branch,course:c})+`<div class="m-course-detail"><section class="m-program"><div class="m-section-title">${icon('book')}<div><span class="m-kicker">ПРОГРАММА КУРСА</span><h2>Что вы изучите</h2></div></div><ul>${(c.outcomes.length?c.outcomes:[c.description||'Подробная программа будет добавлена автором.']).map(o=>`<li>${icon('check')}<span>${esc(o)}</span></li>`).join('')}</ul>${tags([store.levels[c.level],c.topic,store.branches[c.branch]])}<a class="m-text-back" href="${routeFor(t.id,c.branch)}">← Вернуться к курсам ${esc(t.title)}</a></section><aside class="m-course-start"><h2>Ваш следующий шаг</h2><dl><div><dt>Уроков</dt><dd>${c.lessonCount}</dd></div><div><dt>Длительность</dt><dd>${duration(c.durationMinutes)}</dd></div><div><dt>Ветка</dt><dd>${store.branches[c.branch]}</dd></div></dl>${c.url?`<a class="m-button m-primary" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Открыть материалы курса ${icon('arrow')}</a>`:'<p class="m-materials-pending">Ссылка на материалы пока не добавлена автором. Программу можно сохранить в план обучения.</p>'}<button class="m-button ${inPlan?'m-in-plan':''}" type="button" data-action="plan" data-id="${c.id}">${icon(inPlan?'check':'book')}${inPlan?'В плане · убрать':'Добавить в план обучения'}</button><p class="m-plan-hint">Ваш план сохраняется в этом браузере.</p></aside></div>`;
+    return hero({title:c.title,description:c.description,t,branch:c.branch,course:c})+utility()+`<div class="m-course-detail"><section class="m-program"><div class="m-section-title">${icon('book')}<div><span class="m-kicker">ПРОГРАММА КУРСА</span><h2>Что вы изучите</h2></div></div><ul>${(c.outcomes.length?c.outcomes:[c.description||'Подробная программа будет добавлена автором.']).map(o=>`<li>${icon('check')}<span>${esc(o)}</span></li>`).join('')}</ul>${tags([store.levels[c.level],c.topic,store.branches[c.branch]])}<a class="m-text-back" href="${routeFor(t.id,c.branch)}">← Вернуться к курсам ${esc(t.title)}</a></section><aside class="m-course-start"><h2>Ваш следующий шаг</h2><dl><div><dt>Уроков</dt><dd>${c.lessonCount}</dd></div><div><dt>Длительность</dt><dd>${duration(c.durationMinutes)}</dd></div><div><dt>Ветка</dt><dd>${store.branches[c.branch]}</dd></div></dl>${c.url?`<a class="m-button m-primary" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Открыть материалы курса ${icon('arrow')}</a>`:'<p class="m-materials-pending">Ссылка на материалы пока не добавлена автором. Программу можно сохранить в план обучения.</p>'}<button class="m-button ${inPlan?'m-in-plan':''}" type="button" data-action="plan" data-id="${c.id}">${icon(inPlan?'check':'book')}${inPlan?'В плане · убрать':'Добавить в план обучения'}</button><p class="m-plan-hint">Ваш план сохраняется в этом браузере.</p></aside></div>`;
   }
   function parseRoute() {
     let parts;try{parts=location.hash.slice(1).split('/').filter(Boolean).map(decodeURIComponent);}catch{return {kind:'missing'};}
@@ -93,6 +111,7 @@
     document.querySelector('.dashboard').hidden=active;page.hidden=!active;
     document.querySelectorAll('.sidebar .nav-item').forEach(link=>{const selected=active?link.matches('[data-open-mastery]'):link.matches('a[href="./"]');link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
     document.body.classList.toggle('mastery-open',active);
+    page.classList.toggle('m-admin-mode',adminMode);
     if(!active){document.title='Инди Кузница — Платформа';return;}
     document.title=(current.tech?.title||'Древо мастерства')+' — Инди Кузница';
     if(current.kind==='catalog')page.innerHTML=hero({title:'Древо мастерства',description:'Выберите технологию, изучите основы и закрепите знания в прикладных курсах. У каждой технологии — две ветки: от первых шагов к собственным играм.'})+utility()+toolbar()+`<section id="masteryResults" aria-label="Каталог технологий"></section>`;
@@ -100,22 +119,133 @@
     else if(current.kind==='core')page.innerHTML=coreContent(current.tech);
     else if(current.kind==='applied')page.innerHTML=hero({title:'Прикладные курсы '+current.tech.title,description:'Практические мини-проекты и отдельные игровые механики. Создавайте рабочие системы шаг за шагом и применяйте знания на практике.',t:current.tech,branch:'applied'})+utility()+branchTabs(current.tech,'applied')+toolbar(true)+`<section id="masteryResults" aria-label="Прикладные курсы"></section>`;
     else if(current.kind==='course')page.innerHTML=renderCourse(current.course,current.tech);
-    else page.innerHTML='<div class="m-empty"><h1>Ветка не найдена</h1><p>Возможно, технология или курс были скрыты из каталога.</p><a class="m-button m-primary" href="'+routeFor()+'">Вернуться к технологиям</a></div>';
+    else page.innerHTML=utility()+'<div class="m-empty"><h1>Ветка не найдена</h1><p>Возможно, технология или курс были скрыты из каталога.</p><a class="m-button m-primary" href="'+routeFor()+'">Вернуться к технологиям</a></div>';
     renderResults();
     if(scroll){window.scrollTo({top:0,behavior:'instant'});page.focus({preventScroll:true});}
   }
   page.addEventListener('input',event=>{if(event.target.dataset.filter==='query'){filterState().query=event.target.value;renderResults();}});
   page.addEventListener('change',event=>{if(event.target.matches('select[data-filter]')){filterState()[event.target.dataset.filter]=event.target.value;renderResults();}});
   page.addEventListener('click',event=>{
+    if(Date.now()<suppressClickUntil&&event.target.closest('a')){event.preventDefault();return;}
     const button=event.target.closest('button');if(!button)return;
+    if(button.dataset.action==='view-mode') {
+      adminMode=button.dataset.mode==='admin';
+      try{localStorage.setItem('indieforge.mastery.admin',JSON.stringify(adminMode));}catch{notify('Режим изменён до перезагрузки страницы.');}
+      render();return;
+    }
+    if(button.dataset.cardAction){handleCardAction(button);return;}
+    if(button.dataset.action==='add-record'&&adminMode){openManager({collection:button.dataset.collection,id:'new'});return;}
     if(button.dataset.layout){layout=button.dataset.layout;try{localStorage.setItem('indieforge.mastery.layout',JSON.stringify(layout));}catch{notify('Не удалось сохранить выбранный вид.');}renderResults();}
     if(button.dataset.action==='reset-filters'){const state=filterState();Object.assign(state,{query:'',category:'all',level:'all',sort:'recommended'});render();}
-    if(button.dataset.action==='manage')openManager();
+    if(button.dataset.action==='manage'&&adminMode)openManager();
     if(button.dataset.action==='plan'){
       const next=plan.includes(button.dataset.id)?plan.filter(id=>id!==button.dataset.id):[...plan,button.dataset.id];
       try{localStorage.setItem('indieforge.mastery.plan',JSON.stringify(next));plan=next;render();}catch{notify('Не удалось сохранить план в браузере.');}
     }
   });
+
+  function deleteRecord(collection,id) {
+    const item=catalog[collection].find(v=>v.id===id);if(!item)return false;
+    const children=collection==='technologies'?catalog.courses.filter(c=>c.technologyId===id).length:0;
+    const prompt=children?`Удалить технологию «${item.title}» и все её курсы (${children})? Это удалит и скрытые черновики. Сохраните JSON, если нужна копия.`:`Удалить «${item.title}» из каталога?`;
+    if(!confirm(prompt))return false;
+    if(collection==='technologies')store.deleteTechnology(id,{cascade:true});else store.deleteCourse(id);
+    return true;
+  }
+  function reorderGroup(collection,id) {
+    const record=catalog[collection].find(v=>v.id===id);
+    return record?ordered(catalog[collection].filter(v=>collection==='technologies'||(v.technologyId===record.technologyId&&v.branch===record.branch))):[];
+  }
+  function moveRecord(collection,id,targetId) {
+    if(!canReorder())return;
+    try {
+      const changed=collection==='technologies'?store.moveTechnology(id,targetId):store.moveCourse(id,targetId);
+      if(changed){notify('Порядок сохранён.');page.querySelector(`[data-drag-id="${id}"]`)?.focus({preventScroll:true});}
+    }catch(error){notify(error.message);}
+  }
+  function moveBy(collection,id,offset) {
+    const group=reorderGroup(collection,id),index=group.findIndex(v=>v.id===id),target=group[index+offset];
+    if(target)moveRecord(collection,id,target.id);
+  }
+  function handleCardAction(button) {
+    if(!adminMode)return;
+    const {cardAction:action,collection,id}=button.dataset;
+    button.closest('details')?.removeAttribute('open');
+    const record=catalog[collection]?.find(v=>v.id===id);if(!record)return;
+    try {
+      if(action==='edit')openManager({collection,id});
+      if(action==='visibility') {
+        const next={...record,published:!record.published};
+        if(collection==='technologies')store.saveTechnology(next);else store.saveCourse(next);
+        notify(next.published?'Запись опубликована.':'Запись скрыта от учеников.');
+      }
+      if(action==='delete'&&deleteRecord(collection,id))notify('Запись удалена.');
+      if(action==='move-up'||action==='move-down')moveBy(collection,id,action==='move-up'?-1:1);
+    }catch(error){notify(error.message);}
+  }
+
+  // Desktop drag, touch/pen drag and keyboard ordering share the same atomic store operation.
+  let drag=null,touchDrag=null,mouseDragHandle=null,suppressClickUntil=0;
+  const dropCard=target=>target?.closest('[data-reorder-id]');
+  function clearDrag() {
+    page.querySelectorAll('.m-dragging,.m-drop-target').forEach(el=>el.classList.remove('m-dragging','m-drop-target'));
+    document.body.classList.remove('m-is-dragging');drag=null;touchDrag=null;mouseDragHandle=null;
+  }
+  function markDrop(target) {
+    page.querySelectorAll('.m-drop-target').forEach(el=>el.classList.remove('m-drop-target'));
+    const card=dropCard(target);
+    if(!card||!drag||card.dataset.collection!==drag.collection||card.dataset.reorderId===drag.id)return null;
+    if(!reorderGroup(drag.collection,drag.id).some(v=>v.id===card.dataset.reorderId))return null;
+    card.classList.add('m-drop-target');return card;
+  }
+  page.addEventListener('dragstart',event=>{
+    // Keep the pressed handle when browser auto-scroll moves the card before dragstart.
+    const handle=event.target.closest('[data-drag-id]')||mouseDragHandle;
+    mouseDragHandle=null;
+    if(!handle||!canReorder()){event.preventDefault();return;}
+    drag={id:handle.dataset.dragId,collection:handle.dataset.collection};
+    event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',drag.id);
+    const card=dropCard(handle);event.dataTransfer.setDragImage(card,24,24);
+    card.classList.add('m-dragging');document.body.classList.add('m-is-dragging');
+  });
+  page.addEventListener('dragover',event=>{if(markDrop(event.target)){event.preventDefault();event.dataTransfer.dropEffect='move';}});
+  page.addEventListener('drop',event=>{
+    const card=markDrop(event.target);if(!card)return;
+    event.preventDefault();const source=drag,target=card.dataset.reorderId;
+    clearDrag();suppressClickUntil=Date.now()+350;moveRecord(source.collection,source.id,target);
+  });
+  page.addEventListener('dragend',clearDrag);
+  page.addEventListener('keydown',event=>{
+    const handle=event.target.closest('[data-drag-id]');
+    if(handle&&event.altKey&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.key)) {
+      event.preventDefault();moveBy(handle.dataset.collection,handle.dataset.dragId,['ArrowUp','ArrowLeft'].includes(event.key)?-1:1);
+    }
+    if(event.key==='Escape')clearDrag();
+  });
+  page.addEventListener('pointerdown',event=>{
+    const handle=event.target.closest('[data-drag-id]');
+    if(event.pointerType==='mouse'){mouseDragHandle=handle&&canReorder()?handle:null;return;}
+    if(!handle||!canReorder())return;
+    event.preventDefault();handle.setPointerCapture(event.pointerId);
+    touchDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,handle,active:false,target:null};
+  });
+  page.addEventListener('pointermove',event=>{
+    if(!touchDrag||touchDrag.pointerId!==event.pointerId)return;
+    if(!touchDrag.active&&Math.hypot(event.clientX-touchDrag.x,event.clientY-touchDrag.y)<8)return;
+    touchDrag.active=true;
+    drag={id:touchDrag.handle.dataset.dragId,collection:touchDrag.handle.dataset.collection};
+    dropCard(touchDrag.handle).classList.add('m-dragging');document.body.classList.add('m-is-dragging');
+    touchDrag.target=markDrop(document.elementFromPoint(event.clientX,event.clientY))?.dataset.reorderId;
+    if(event.clientY<110)window.scrollBy(0,-20);else if(event.clientY>innerHeight-70)window.scrollBy(0,20);
+  });
+  page.addEventListener('pointerup',event=>{
+    mouseDragHandle=null;
+    if(!touchDrag||touchDrag.pointerId!==event.pointerId)return;
+    const source=drag,target=touchDrag.target,active=touchDrag.active;
+    clearDrag();if(active){suppressClickUntil=Date.now()+350;if(target)moveRecord(source.collection,source.id,target);}
+  });
+  page.addEventListener('pointercancel',()=>{if(touchDrag)clearDrag();});
+  document.addEventListener('click',event=>{page.querySelectorAll('.m-card-menu[open]').forEach(menu=>{if(!menu.contains(event.target))menu.open=false;});});
 
   // Catalogue management: the same repository powers every public view.
   const dialog=document.createElement('dialog');dialog.id='masteryManager';dialog.className='m-manager';dialog.setAttribute('aria-labelledby','masteryManagerTitle');
@@ -123,7 +253,7 @@
   document.body.append(dialog);
   const managerBody=()=>dialog.querySelector('#masteryManagerBody');
   const message=text=>{dialog.querySelector('#masteryManagerMessage').textContent=text;};
-  function openManager(){manager.tech=current.tech?.id||'';manager.editing=null;manager.query='';renderManager();dialog.showModal();if(store.recoveryMessage())message(store.recoveryMessage());}
+  function openManager({collection='courses',id=null}={}){if(!adminMode)return;manager.tab=collection;manager.tech=current.tech?.id||'';manager.editing=id;manager.query='';message('');renderManager();dialog.showModal();if(store.recoveryMessage())message(store.recoveryMessage());}
   function renderManager() {
     catalog=store.snapshot();dialog.querySelectorAll('[data-admin-tab]').forEach(b=>b.setAttribute('aria-pressed',String(manager.tab===b.dataset.adminTab)));
     if(manager.editing){renderEdit();return;}
@@ -136,25 +266,44 @@
     const items=ordered(catalog[manager.tab]).filter(item=>item.title.toLocaleLowerCase('ru').includes(q)&&(!courseMode||!manager.tech||item.technologyId===manager.tech));
     dialog.querySelector('#masteryAdminRows').innerHTML=items.length?items.map(item=>{
       const t=courseMode?catalog.technologies.find(t=>t.id===item.technologyId):item;
-      return `<div class="m-admin-row"><div><strong>${esc(item.title)}</strong><small>${courseMode?esc(t.title)+' · '+store.branches[item.branch]:esc(store.categories[item.category])} · ${item.published?'В каталоге':'Скрыто'}</small></div><button class="m-button" type="button" data-admin="edit" data-id="${item.id}" aria-label="Редактировать ${esc(item.title)}">Изменить</button><button class="m-admin-delete" type="button" data-admin="delete" data-id="${item.id}" aria-label="Удалить ${esc(item.title)}">×</button></div>`;
+      return `<div class="m-admin-row ${item.published?'':'m-hidden-row'}"><div>${statusBadge(item,courseMode?t:null)}<strong>${esc(item.title)}</strong><small>${courseMode?esc(t.title)+' · '+store.branches[item.branch]:esc(store.categories[item.category])} · ${item.published?'В каталоге':'Скрыто'}</small></div><button class="m-button" type="button" data-admin="visibility" data-id="${item.id}">${item.published?'Скрыть':'Опубликовать'}</button><button class="m-button" type="button" data-admin="edit" data-id="${item.id}" aria-label="Редактировать ${esc(item.title)}">Изменить</button><button class="m-admin-delete" type="button" data-admin="delete" data-id="${item.id}" aria-label="Удалить ${esc(item.title)}">×</button></div>`;
     }).join(''):'<div class="m-empty"><h3>Пока ничего нет</h3><p>Добавьте запись или измените фильтр.</p></div>';
   }
   const inputField=(label,name,value,{type='text',required=false,wide=false}={})=>`<label class="m-form-field ${wide?'wide':''}">${label}<input name="${name}" type="${type}" value="${esc(value)}" ${required?'required':''} ${type==='number'?'min="0" max="60000" step="1"':''} ${name==='id'?'readonly':''}></label>`;
   const areaField=(label,name,value)=>`<label class="m-form-field wide">${label}<textarea name="${name}" rows="3" maxlength="2000">${esc(value)}</textarea></label>`;
   const selectField=(label,name,value,entries)=>`<label class="m-form-field">${label}<select name="${name}">${entries.map(([v,t])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+  function mediaField(label,name,value) {
+    return `<div class="m-media-field wide"><label class="m-form-field">${label}<input name="${name}" value="${esc(value)}" placeholder="Путь к файлу или HTTPS-ссылка" aria-label="${label}"></label><div class="m-media-tools"><img data-media-preview="${name}" ${value?`src="${esc(value)}"`:'hidden'} alt="Предпросмотр: ${label}"><label class="m-button m-upload-label">Выбрать файл<input type="file" data-media-upload="${name}" accept="image/png,image/jpeg,image/webp,image/gif"></label><button class="m-button" type="button" data-clear-media="${name}">Убрать</button><small>PNG, JPEG, WebP, GIF · до 400 КБ</small></div></div>`;
+  }
+  function updateMediaPreview(name,value) {
+    const preview=dialog.querySelector(`[data-media-preview="${name}"]`);if(!preview)return;
+    try{const safe=store.safeImage(value);preview.hidden=!safe;if(safe)preview.src=safe;else preview.removeAttribute('src');}catch{preview.hidden=true;}
+  }
   function renderEdit(){
     const courseMode=manager.tab==='courses';
     const record=manager.editing==='new'?null:catalog[manager.tab].find(item=>item.id===manager.editing);
     if(!record&&manager.editing!=='new'){manager.editing=null;renderManager();return;}
-    const base=record||(courseMode?{id:store.newId('course'),technologyId:manager.tech||catalog.technologies[0]?.id,branch:'core',title:'',description:'',level:'beginner',topic:'Основы',lessonCount:0,durationMinutes:0,order:catalog.courses.length+1,published:true,capstone:false,image:'',url:'',outcomes:[]}:{id:store.newId('technology'),title:'',description:'',category:'engine',tags:[],icon:'tools',color:'#40bfff',image:'assets/mastery/tools.svg',order:catalog.technologies.length+1,published:true});
+    const base=record||(courseMode?{id:store.newId('course'),technologyId:manager.tech||catalog.technologies[0]?.id,branch:current.kind==='applied'?'applied':'core',title:'',description:'',level:'beginner',topic:'Основы',lessonCount:0,durationMinutes:0,order:catalog.courses.length+1,published:false,capstone:false,image:'',icon:'',iconUrl:'',url:'',outcomes:[]}:{id:store.newId('technology'),title:'',description:'',category:'engine',tags:[],icon:'tools',color:'#40bfff',image:'assets/mastery/tools.svg',order:catalog.technologies.length+1,published:false});
     if(courseMode&&!catalog.technologies.length){message('Сначала добавьте технологию.');manager.editing=null;renderManager();return;}
     const common=inputField('Название','title',base.title,{required:true,wide:true})+areaField('Описание','description',base.description);
-    const fields=courseMode?selectField('Технология','technologyId',base.technologyId,catalog.technologies.map(t=>[t.id,t.title]))+selectField('Ветка','branch',base.branch,Object.entries(store.branches))+selectField('Уровень','level',base.level,Object.entries(store.levels))+inputField('Тема / механика','topic',base.topic)+inputField('Количество уроков','lessonCount',base.lessonCount,{type:'number'})+inputField('Длительность в минутах','durationMinutes',base.durationMinutes,{type:'number'})+inputField('Ссылка на материалы курса (необязательно)','url',base.url,{wide:true})+areaField('Что изучим — каждый пункт с новой строки','outcomes',base.outcomes.join('\n')):selectField('Категория','category',base.category,Object.entries(store.categories))+selectField('Значок','icon',base.icon,store.icons.map(v=>[v,v]))+inputField('Цвет значка','color',base.color,{type:'color'})+inputField('Метки через запятую','tags',base.tags.join(', '));
-    managerBody().innerHTML=`<button class="m-text-back" type="button" data-admin="back">← К списку</button><h3 class="m-edit-title">${record?'Редактировать': 'Добавить'} ${courseMode?'курс':'технологию'}</h3><form id="masteryEditForm" class="m-edit-form">${common}${fields}${courseMode?`<label class="m-publish-toggle wide"><input type="checkbox" name="capstone" ${base.capstone?'checked':''}> Итоговый / дипломный проект (выделенная карточка)</label>`:''}${inputField('Иллюстрация: путь к файлу или HTTPS-ссылка','image',base.image,{wide:true})}${inputField('Порядок в списке','order',base.order,{type:'number'})}${inputField('Постоянный ID','id',base.id)}<label class="m-publish-toggle wide"><input type="checkbox" name="published" ${base.published?'checked':''}> Показывать в каталоге</label><div class="m-form-actions wide"><button class="m-button" type="button" data-admin="back">Отмена</button><button class="m-button m-primary" type="submit">Сохранить ${courseMode?'курс':'технологию'}</button></div></form>`;
+    const fields=courseMode?selectField('Технология','technologyId',base.technologyId,catalog.technologies.map(t=>[t.id,t.title]))+selectField('Ветка','branch',base.branch,Object.entries(store.branches))+selectField('Уровень','level',base.level,Object.entries(store.levels))+inputField('Тема / механика','topic',base.topic)+inputField('Количество уроков','lessonCount',base.lessonCount,{type:'number'})+inputField('Длительность в минутах','durationMinutes',base.durationMinutes,{type:'number'})+selectField('Значок курса','icon',base.icon||'',[['','Как у технологии'],...store.icons.map(v=>[v,iconLabels[v]])])+inputField('Ссылка на материалы курса (необязательно)','url',base.url,{wide:true})+areaField('Что изучим — каждый пункт с новой строки','outcomes',base.outcomes.join('\n')):selectField('Категория','category',base.category,Object.entries(store.categories))+selectField('Значок','icon',base.icon,store.icons.map(v=>[v,iconLabels[v]]))+inputField('Цвет значка','color',base.color,{type:'color'})+inputField('Метки через запятую','tags',base.tags.join(', '));
+    managerBody().innerHTML=`<button class="m-text-back" type="button" data-admin="back">← К списку</button><h3 class="m-edit-title">${record?'Редактировать': 'Добавить'} ${courseMode?'курс':'технологию'}</h3><form id="masteryEditForm" class="m-edit-form">${common}${fields}${courseMode?`<label class="m-publish-toggle wide"><input type="checkbox" name="capstone" ${base.capstone?'checked':''}> Итоговый / дипломный проект (выделенная карточка)</label>`:''}${mediaField('Изображение карточки','image',base.image)}${mediaField('Собственная иконка (необязательно)','iconUrl',base.iconUrl||'')}${inputField('Порядок в списке','order',base.order,{type:'number'})}${inputField('Постоянный ID','id',base.id)}<label class="m-publish-toggle wide"><input type="checkbox" name="published" ${base.published?'checked':''}> Опубликовано — видно ученикам</label><div class="m-form-actions wide"><button class="m-button" type="button" data-admin="back">Отмена</button><button class="m-button m-primary" type="submit">Сохранить ${courseMode?'курс':'технологию'}</button></div></form>`;
     managerBody().querySelector('[name=title]').focus();
   }
-  dialog.addEventListener('input',event=>{if(event.target.id==='masteryAdminSearch'){manager.query=event.target.value;renderManagerRows();}});
+  dialog.addEventListener('input',event=>{if(event.target.id==='masteryAdminSearch'){manager.query=event.target.value;renderManagerRows();}if(['image','iconUrl'].includes(event.target.name))updateMediaPreview(event.target.name,event.target.value);});
   dialog.addEventListener('change',async event=>{
+    if(event.target.dataset.mediaUpload) {
+      const file=event.target.files[0],name=event.target.dataset.mediaUpload;event.target.value='';if(!file)return;
+      try {
+        if(file.size>400*1024||!['image/png','image/jpeg','image/webp','image/gif'].includes(file.type))throw Error('Выберите PNG, JPEG, WebP или GIF размером до 400 КБ.');
+        const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Не удалось прочитать изображение.'));reader.readAsDataURL(file);});
+        store.safeImage(data);
+        // Ignore a file read that completed after the form was closed or changed.
+        if(!dialog.open||!event.target.isConnected)return;
+        const field=dialog.querySelector(`[name="${name}"]`);field.value=data;updateMediaPreview(name,data);message('Изображение выбрано. Сохраните карточку, чтобы применить его.');
+      }catch(error){message(error.message);}
+      return;
+    }
     if(event.target.id==='masteryAdminTech'){manager.tech=event.target.value;renderManagerRows();}
     if(event.target.id!=='masteryImport')return;
     const file=event.target.files[0];event.target.value='';if(!file)return;
@@ -170,6 +319,7 @@
   });
   dialog.addEventListener('click',event=>{
     const button=event.target.closest('button');if(!button)return;
+    if(button.dataset.clearMedia){const name=button.dataset.clearMedia;dialog.querySelector(`[name="${name}"]`).value='';updateMediaPreview(name,'');return;}
     if(button.dataset.adminTab){manager.tab=button.dataset.adminTab;manager.query='';manager.editing=null;message('');renderManager();return;}
     const action=button.dataset.admin;
     if(action==='close')dialog.close();
@@ -177,8 +327,11 @@
     if(action==='back'){manager.editing=null;message('');renderManager();}
     if(action==='edit'){manager.editing=button.dataset.id;message('');renderManager();}
     if(action==='delete'){
-      const item=catalog[manager.tab].find(v=>v.id===button.dataset.id);if(!item||!confirm('Удалить «'+item.title+'» из каталога?'))return;
-      try{if(manager.tab==='courses')store.deleteCourse(item.id);else store.deleteTechnology(item.id);renderManager();message('Запись удалена.');}catch(error){message(error.message);}
+      try{if(deleteRecord(manager.tab,button.dataset.id)){renderManager();message('Запись удалена.');}}catch(error){message(error.message);}
+    }
+    if(action==='visibility') {
+      const item=catalog[manager.tab].find(v=>v.id===button.dataset.id);if(!item)return;
+      try{const next={...item,published:!item.published};if(manager.tab==='courses')store.saveCourse(next);else store.saveTechnology(next);renderManager();message(next.published?'Запись опубликована.':'Запись скрыта от учеников.');}catch(error){message(error.message);}
     }
     if(action==='import')dialog.querySelector('#masteryImport').click();
     if(action==='export'){
@@ -190,7 +343,7 @@
   window.addEventListener('mastery:catalog-changed',()=>render());
   window.MasteryApp={
     open:()=>{location.hash='/mastery';},
-    search(query){const q=query.toLocaleLowerCase('ru'),active=visibleTechs();return [...active.filter(t=>[t.title,...t.tags].join(' ').toLocaleLowerCase('ru').includes(q)).map(t=>({title:t.title+' · Технология',hash:routeFor(t.id)})),...catalog.courses.filter(c=>c.published&&active.some(t=>t.id===c.technologyId)&&[c.title,c.description].join(' ').toLocaleLowerCase('ru').includes(q)).map(c=>({title:c.title+' · '+catalog.technologies.find(t=>t.id===c.technologyId).title,hash:routeFor(c.technologyId,c.branch,c.id)}))].slice(0,15);},
+    search(query){const q=query.toLocaleLowerCase('ru'),active=visibleTechs();return [...active.filter(t=>[t.title,...t.tags].join(' ').toLocaleLowerCase('ru').includes(q)).map(t=>({title:t.title+' · Технология',hash:routeFor(t.id)})),...catalog.courses.filter(c=>(adminMode||c.published)&&active.some(t=>t.id===c.technologyId)&&[c.title,c.description].join(' ').toLocaleLowerCase('ru').includes(q)).map(c=>({title:c.title+' · '+catalog.technologies.find(t=>t.id===c.technologyId).title,hash:routeFor(c.technologyId,c.branch,c.id)}))].slice(0,15);},
     // Integration seam for a future lesson player; progress is separate from catalogue data.
     setCourseProgress(id,lessons){const course=catalog.courses.find(c=>c.id===id);if(!course||!Number.isFinite(lessons))return false;const next={...progress,[id]:Math.min(course.lessonCount,Math.max(0,Math.round(lessons)))};try{localStorage.setItem('indieforge.mastery.progress',JSON.stringify(next));progress=next;render();return true;}catch{return false;}}
   };
