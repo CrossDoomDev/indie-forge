@@ -1,11 +1,21 @@
-﻿const toast=document.querySelector('.toast');
+const toast=document.querySelector('.toast');
 let toastTimer;
 function announce(text){clearTimeout(toastTimer);toast.textContent=text;toast.hidden=false;toastTimer=setTimeout(()=>toast.hidden=true,4200);}
 document.querySelectorAll('[data-soon]').forEach(button=>button.addEventListener('click',()=>{announce('«'+button.dataset.soon+'» — этот раздел появится на следующем этапе.');}));
 const search=document.querySelector('#search');
 const results=document.querySelector('.search-results');
 const entries=[['HTML — основы структуры','#learning'],['Веб-разработка с нуля','#learning'],['Личный сайт','#projects'],['Игра Змейка','#projects'],['Список задач','#projects']];
-function showSearch(){const q=search.value.trim().toLocaleLowerCase('ru');results.replaceChildren();if(!q){results.hidden=true;return;}const found=entries.filter(([title])=>title.toLocaleLowerCase('ru').includes(q));for(const [title,selector] of found){const button=document.createElement('button');button.textContent=title;button.addEventListener('click',()=>{results.hidden=true;const target=document.querySelector(selector);target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});target.classList.remove('highlight');void target.offsetWidth;target.classList.add('highlight');});results.append(button);}if(!found.length){const message=document.createElement('p');message.textContent='Ничего не найдено';results.append(message);}results.hidden=false;}
+function showSearch(){
+ const q=search.value.trim().toLocaleLowerCase('ru');results.replaceChildren();if(!q){results.hidden=true;return;}
+ const found=[...entries.filter(([title])=>title.toLocaleLowerCase('ru').includes(q)).map(([title,selector])=>({title,selector})),...(window.MasteryApp?.search(q)||[])].slice(0,15);
+ for(const entry of found){const button=document.createElement('button');button.textContent=entry.title;button.addEventListener('click',()=>{
+  results.hidden=true;
+  if(entry.hash){location.hash=entry.hash;search.blur();return;}
+  const highlight=()=>{const target=document.querySelector(entry.selector);target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});target.classList.remove('highlight');void target.offsetWidth;target.classList.add('highlight');};
+  if(location.hash.startsWith('#/mastery')){window.addEventListener('hashchange',highlight,{once:true});location.hash='';}else highlight();
+ });results.append(button);}
+ if(!found.length){const message=document.createElement('p');message.textContent='Ничего не найдено';results.append(message);}results.hidden=false;
+}
 search.addEventListener('input',showSearch);search.addEventListener('focus',showSearch);
 document.querySelector('.search-field').addEventListener('click',()=>search.focus());
 const popovers=[['.notification-button','.notification-popover'],['.profile-button','.profile-popover']];

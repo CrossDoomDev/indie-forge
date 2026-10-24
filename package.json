@@ -1,13 +1,14 @@
-﻿{
-    "name":  "indie-forge-visual",
-    "version":  "1.0.0",
-    "private":  true,
-    "scripts":  {
-                    "start":  "node serve.cjs",
-                    "dev":  "node serve.cjs",
-                    "verify":  "node verify.cjs"
-                },
-    "devDependencies":  {
-                            "@playwright/test":  "^1.63.0"
-                        }
+{
+  "name": "indie-forge-visual",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node serve.cjs",
+    "dev": "node serve.cjs",
+    "verify": "node verify.cjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
 }
