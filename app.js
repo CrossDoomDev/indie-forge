@@ -1,7 +1,6 @@
 ﻿const toast=document.querySelector('.toast');
 let toastTimer;
 function announce(text){clearTimeout(toastTimer);toast.textContent=text;toast.hidden=false;toastTimer=setTimeout(()=>toast.hidden=true,4200);}
-document.querySelector('.sidebar nav')?.insertAdjacentHTML('beforeend','<a class="nav-item" href="editor.html"><svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg><span>Редактор уроков</span></a>');
 document.querySelectorAll('[data-soon]').forEach(button=>button.addEventListener('click',()=>{announce('«'+button.dataset.soon+'» — этот раздел появится на следующем этапе.');}));
 const search=document.querySelector('#search');
 const results=document.querySelector('.search-results');
