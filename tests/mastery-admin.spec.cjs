@@ -90,7 +90,7 @@ test('hidden drafts remain editable for administrator and vanish from student ca
  await page.goto('/#/mastery');await action(page,'blender','visibility');
  await expect(page.locator('[data-technology=blender] .m-status')).toContainText('Скрыто');
  await page.locator('[data-technology=blender] .m-tech-link').click();
- await page.locator('.m-core').click();await expect(page.locator('.m-status').first()).toContainText('Скрыто');
+ await page.locator('.m-start-learning').click();await expect(page.locator('.m-status').first()).toContainText('Скрыто');
  await expect(page.locator('.m-course-card .m-status').first()).toContainText('Скрыто вместе с технологией');
  await page.locator('[data-mode=student]').click();await expect(page.locator('#masteryPage h1')).toHaveText('Ветка не найдена');
  expect(await page.evaluate(()=>MasteryApp.search('Blender'))).toEqual([]);

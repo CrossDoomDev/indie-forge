@@ -10,6 +10,7 @@ async function addTechnology(page,title){
  await page.locator('[data-admin=new]').click();
  await page.locator('#masteryEditForm [name=title]').fill(title);
  await page.locator('#masteryEditForm [name=description]').fill('Технология, добавленная вручную.');
+ await page.locator('#masteryEditForm [name=about]').fill('Подробное описание технологии.\n\nВторой абзац автора.');
  await page.locator('#masteryEditForm [name=published]').check();
  await page.locator('#masteryEditForm button[type=submit]').click();
  await expect(page.locator('#masteryManagerMessage')).toHaveText('Изменения сохранены.');
@@ -42,9 +43,15 @@ test('home entry opens technology catalogue; Blender and Aseprite are separate b
   await expect(card.locator('a')).toHaveCount(1);
   await expect(card.locator('a.m-card-title,.m-card-arrow')).toHaveCount(0);
   await card.locator('.m-tech-link').click();
-  await expect(page.locator('.m-branch-card')).toHaveCount(2);
+  await expect(page.locator('.m-branch-card')).toHaveCount(0);
+  await expect(page.locator('.m-start-learning')).toHaveText('Начать изучать');
   await expect(page).toHaveURL(new RegExp('#/mastery/'+id+'$'));
-  await page.goBack();
+  await page.locator('.m-start-learning').click();
+  await expect(page).toHaveURL(new RegExp('#/mastery/'+id+'/core$'));
+  await expect(page.locator('.m-branch-tabs a')).toHaveCount(2);
+  await page.locator('.m-branch-tabs a').nth(1).click();
+  await expect(page.locator('.m-course-card')).toHaveCount(2);
+  await page.goto('/#/mastery');
  }
  await expect(page.locator('.sidebar [data-open-mastery]')).toHaveAttribute('aria-current','page');
  await page.locator('.sidebar a[href="./"]').click();
@@ -77,9 +84,8 @@ test('grid/list switch persists; search, category, level and sort filter actual 
 
 test('Godot branches derive counts and ordered learning path from the catalogue',async({page})=>{
  await page.goto('/#/mastery/godot');
- await expect(page.locator('.m-core .m-branch-copy>strong')).toHaveText('13 курсов');
- await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('12 курсов');
- await page.locator('.m-core').click();
+ await page.locator('.m-start-learning').click();
+ await expect(page.locator('.m-path-stats strong').first()).toHaveText('13 курсов');
  await expect(page.locator('.m-path-card')).toHaveCount(13);
  await expect(page.locator('.m-path-card .m-card-title').first()).toHaveText('Godot с нуля');
  await expect(page.locator('.m-path-card .m-card-title').last()).toHaveText('Дипломный проект');
@@ -126,8 +132,12 @@ test('owner can add a technology and both course branches, edit classification a
  const applied=await addCourse(page,'Игра на новом движке',technology,'applied');
  await page.locator('[data-admin=close]').click();
  await page.goto('/#/mastery/'+technology);
- await expect(page.locator('.m-core .m-branch-copy>strong')).toHaveText('1 курс');
- await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('1 курс');
+ await expect(page.locator('.m-technology-description p')).toHaveCount(2);
+ await expect(page.locator('.m-technology-description')).toContainText('Подробное описание технологии.');
+ await page.locator('.m-start-learning').click();
+ await expect(page.locator('.m-path-card')).toHaveCount(1);
+ await page.locator('.m-branch-tabs a').nth(1).click();
+ await expect(page.locator('.m-course-card')).toHaveCount(1);
  await page.reload();
  await page.goto('/#/mastery/'+technology+'/core/'+core);
  await expect(page.locator('.m-program li')).toHaveCount(2);
@@ -140,8 +150,10 @@ test('owner can add a technology and both course branches, edit classification a
  await page.locator('[name=capstone]').check();
  await page.locator('#masteryEditForm button[type=submit]').click();
  await page.locator('[data-admin=close]').click();
- await expect(page.locator('.m-core .m-branch-copy>strong')).toHaveText('2 курса');
- await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('0 курсов');
+ await page.locator('.m-start-learning').click();
+ await expect(page.locator('.m-path-card')).toHaveCount(2);
+ await page.locator('.m-branch-tabs a').nth(1).click();
+ await expect(page.locator('.m-course-card')).toHaveCount(0);
  await page.goto('/#/mastery/'+technology+'/core');
  await expect(page.locator('.m-path-card .m-card-title').first()).toHaveText('Игра на новом движке');
  await expect(page.locator('.m-capstone .m-card-title')).toHaveText('Игра на новом движке');
@@ -156,6 +168,7 @@ test('JSON export/import is portable, rejects unsafe or dangling records atomica
  const download=await downloadPromise;
  const exported=JSON.parse(await fs.readFile(await download.path(),'utf8'));
  expect(exported.technologies.find(t=>t.id==='aseprite')).toBeTruthy();
+ expect(exported.technologies.find(t=>t.id==='rpgmaker').about).toContain('RPG Maker');
  expect(exported.courses.find(c=>c.id==='godot-core-1').branch).toBe('core');
  const before=await catalogue(page);
  const bad=structuredClone(exported);bad.courses[0].url='javascript:alert(1)';
@@ -188,9 +201,11 @@ test('unpublished records disappear from public routes and empty branches remain
  await page.locator('[name=published]').uncheck();
  await page.locator('#masteryEditForm button[type=submit]').click();
  await page.locator('[data-admin=close]').click();
- await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('2 курса');
+ await page.locator('.m-start-learning').click();
+ await page.locator('.m-branch-tabs a').nth(1).click();
+ await expect(page.locator('.m-course-card')).toHaveCount(2);
  await page.locator('[data-mode=student]').click();
- await expect(page.locator('.m-applied .m-branch-copy>strong')).toHaveText('1 курс');
+ await expect(page.locator('.m-course-card')).toHaveCount(1);
  await page.goto('/#/mastery/blender/applied/'+hiddenId);
  await expect(page.locator('#masteryPage h1')).toHaveText('Ветка не найдена');
  await page.goto('/#/mastery');
