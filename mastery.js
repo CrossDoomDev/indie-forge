@@ -11,12 +11,13 @@
   let adminMode=safeRead('indieforge.mastery.admin',false)===true;
   let plan=safeRead('indieforge.mastery.plan',[]);if(!Array.isArray(plan))plan=[];
   let progress=safeRead('indieforge.mastery.progress',{});if(!progress||typeof progress!=='object'||Array.isArray(progress))progress={};
+  let workspace=null;
   let catalog=store.snapshot(), current={kind:'catalog'}, manager={tab:'courses',query:'',tech:'',editing:null};
   const filters=new Map();
   const ordered=items=>[...items].sort((a,b)=>a.order-b.order||a.title.localeCompare(b.title,'ru'));
   const visibleTechs=()=>ordered(catalog.technologies.filter(t=>adminMode||t.published));
   const coursesFor=(id,branch)=>ordered(catalog.courses.filter(c=>(adminMode||c.published)&&c.technologyId===id&&(!branch||c.branch===branch)));
-  const completedLessons=c=>Math.max(0,Math.min(c.lessonCount,Number(progress[c.id])||0));
+  const completedLessons=c=>c.curriculum?CourseLearning.progress(c).lessons:Math.max(0,Math.min(c.lessonCount,Number(progress[c.id])||0));
   const percent=c=>c.lessonCount?Math.round(completedLessons(c)/c.lessonCount*100):0;
   const plural=(n,forms)=>forms[n%100>=11&&n%100<=14?2:n%10===1?0:n%10>=2&&n%10<=4?1:2];
   const courseCount=n=>n+' '+plural(n,['курс','курса','курсов']);
@@ -90,12 +91,58 @@
   }
   function coreContent(t) {
     const courses=coursesFor(t.id,'core'),done=courses.filter(c=>percent(c)===100).length,pct=courses.length?Math.round(done/courses.length*100):0,hours=Math.round(courses.reduce((sum,c)=>sum+c.durationMinutes,0)/60);
-    return hero({title:'Основные курсы '+t.title,description:'Пошаговый путь от новичка к уверенной работе. Изучайте инструменты по порядку и закрепляйте знания на практике.',t,branch:'core'})+utility()+branchTabs(t,'core')+`<section class="m-progress-summary"><div class="m-progress-ring" style="--progress:${pct}%" role="img" aria-label="Завершено ${pct}%"><span>${pct}%</span></div><div class="m-progress-copy"><h2>${done} из ${courses.length} курсов завершено</h2><p>Каждый курс — ещё один шаг к вашей собственной игре.</p></div><div class="m-path-stats"><span>${icon('book')}<strong>${courseCount(courses.length)}</strong><small>Полный путь обучения</small></span><span>${icon('refresh')}<strong>~${hours} часов</strong><small>Общая длительность</small></span><span>${icon('bars')}<strong>Новичок → Профи</strong><small>От основ к проекту</small></span></div></section><div class="m-section-title">${icon('tree')}<div><h2>Путь обучения</h2><p>Идите по порядку или выберите тему, которую хотите изучить.</p></div></div><div class="m-learning-path">${courses.length?courses.map((c,i)=>courseCard(c,t,true,i)).join(''):'<div class="m-empty"><h2>Путь ещё формируется</h2><p>Основные курсы появятся здесь после добавления в каталог.</p></div>'}</div>`;
+    return hero({title:'Основные курсы '+t.title,description:'Пошаговый путь от новичка к уверенной работе. Изучайте инструменты по порядку и закрепляйте знания на практике.',t,branch:'core'})+utility()+branchTabs(t,'core')+`<section class="m-progress-summary"><div class="m-progress-ring" style="--progress:${pct}%" role="img" aria-label="Завершено ${pct}%"><span>${pct}%</span></div><div class="m-progress-copy"><h2>${done} из ${courses.length} курсов завершено</h2><p>Каждый курс — ещё один шаг к вашей собственной игре.</p></div><div class="m-path-stats"><span>${icon('book')}<strong>${courseCount(courses.length)}</strong><small>Полный путь обучения</small></span><span>${icon('refresh')}<strong>~${hours} часов</strong><small>Общая длительность</small></span><span>${icon('bars')}<strong>Новичок → Профи</strong><small>От основ к проекту</small></span></div></section><div class="m-section-title">${icon('tree')}<div><h2>Путь обучения</h2><p>Идите по порядку или выберите тему, которую хотите изучить.</p></div></div><div class="m-core-toolbar">${layoutSwitch()}<p>${adminMode?'Перетаскивайте курсы за ⠿, чтобы настроить путь обучения.':'Выберите удобный вид пути обучения.'}</p></div><div class="m-learning-path ${layout==='list'?'m-list':''}">${courses.length?courses.map((c,i)=>courseCard(c,t,true,i)).join(''):'<div class="m-empty"><h2>Путь ещё формируется</h2><p>Основные курсы появятся здесь после добавления в каталог.</p></div>'}</div>`;
+  }
+  const paragraphs=value=>String(value||'').split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
+  const learningRoute=(c,lesson='')=>routeFor(c.technologyId,c.branch,c.id)+'/learn'+(lesson?'/'+encodeURIComponent(lesson):'');
+  const modeSwitch=()=>`<div class="m-view-switch m-mode-switch" role="group" aria-label="Режим просмотра"><button type="button" data-action="view-mode" data-mode="student" aria-pressed="${!adminMode}">Ученик</button><button type="button" data-action="view-mode" data-mode="admin" aria-pressed="${adminMode}">Администратор</button></div>`;
+  const layoutSwitch=()=>`<div class="m-view-switch" role="group" aria-label="Вид каталога"><button type="button" data-layout="grid" aria-pressed="${layout==='grid'}">${icon('grid')} Сетка</button><button type="button" data-layout="list" aria-pressed="${layout==='list'}">${icon('list')} Список</button></div>`;
+  function program(c,t) {
+    const content=c.curriculum,done=new Set(CourseLearning.progress(c).completedLessonIds||[]);
+    if(!content)return `<div class="m-curriculum-empty"><p>Уроки курса ещё готовятся. Программа появится после добавления материалов автором.</p>${adminMode?`<a class="m-button" href="${learningRoute(c)}">Создать первый урок ${icon('arrow')}</a>`:''}</div>`;
+    return content.modules.map((module,mi)=>`<details class="m-program-module" open><summary><span>${mi+1}. ${esc(module.title)}</span><small>${lessonCount(module.lessonIds.length)}</small></summary><ol>${module.lessonIds.map((id,li)=>{const lesson=content.lessons.find(l=>l.id===id);return `<li><a href="${learningRoute(c,id)}" class="${done.has(id)?'m-lesson-done':''}"><span class="m-program-number">${mi+1}.${li+1}</span><span>${esc(lesson.title)}</span><small>${lesson.steps.length} ${plural(lesson.steps.length,['шаг','шага','шагов'])}</small>${icon(done.has(id)?'check':'arrow')}</a></li>`;}).join('')}</ol></details>`).join('');
   }
   function renderCourse(c,t) {
-    const inPlan=plan.includes(c.id);
-    return hero({title:c.title,description:c.description,t,branch:c.branch,course:c})+utility()+`<div class="m-course-detail"><section class="m-program"><div class="m-section-title">${icon('book')}<div><span class="m-kicker">ПРОГРАММА КУРСА</span><h2>Что вы изучите</h2></div></div><ul>${(c.outcomes.length?c.outcomes:[c.description||'Подробная программа будет добавлена автором.']).map(o=>`<li>${icon('check')}<span>${esc(o)}</span></li>`).join('')}</ul>${tags([store.levels[c.level],c.topic,store.branches[c.branch]])}<a class="m-text-back" href="${routeFor(t.id,c.branch)}">← Вернуться к курсам ${esc(t.title)}</a></section><aside class="m-course-start"><h2>Ваш следующий шаг</h2><dl><div><dt>Уроков</dt><dd>${c.lessonCount}</dd></div><div><dt>Длительность</dt><dd>${duration(c.durationMinutes)}</dd></div><div><dt>Ветка</dt><dd>${store.branches[c.branch]}</dd></div></dl>${c.url?`<a class="m-button m-primary" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Открыть материалы курса ${icon('arrow')}</a>`:'<p class="m-materials-pending">Ссылка на материалы пока не добавлена автором. Программу можно сохранить в план обучения.</p>'}<button class="m-button ${inPlan?'m-in-plan':''}" type="button" data-action="plan" data-id="${c.id}">${icon(inPlan?'check':'book')}${inPlan?'В плане · убрать':'Добавить в план обучения'}</button><p class="m-plan-hint">Ваш план сохраняется в этом браузере.</p></aside></div>`;
+    const inPlan=plan.includes(c.id),enrolled=CourseLearning.enrolled(c.id),stats=CourseLearning.progress(c);
+    const about=c.about||c.description,audience=c.audience||(c.level==='beginner'?'Для тех, кто начинает знакомство с '+t.title+'.':'Для тех, кто хочет углубить знания '+t.title+' и применить их на практике.');
+    return hero({title:c.title,description:c.description,t,branch:c.branch,course:c})+utility()+`<div class="m-course-detail m-course-promo"><div class="m-course-information"><nav class="m-promo-nav" aria-label="Разделы описания курса"><a href="#course-outcomes" data-promo-section="course-outcomes">Чему вы научитесь</a><a href="#course-about" data-promo-section="course-about">О курсе</a><a href="#course-program" data-promo-section="course-program">Программа</a></nav><section class="m-program" id="course-outcomes"><span class="m-kicker">РЕЗУЛЬТАТ ОБУЧЕНИЯ</span><h2>Чему вы научитесь</h2><ul>${(c.outcomes.length?c.outcomes:['Подробные результаты обучения будут добавлены автором.']).map(o=>`<li>${icon('check')}<span>${esc(o)}</span></li>`).join('')}</ul></section><section class="m-program" id="course-about"><h2>О курсе</h2><div class="m-promo-prose">${paragraphs(about)}</div><h3>Для кого этот курс</h3><div class="m-promo-prose">${paragraphs(audience)}</div><h3>Начальные требования</h3><div class="m-promo-prose">${paragraphs(c.requirements||'Специальные требования пока не указаны автором.')}</div><h3>Как проходит обучение</h3><div class="m-promo-prose">${paragraphs(c.learningFormat||'Проходите уроки в удобном темпе: читайте материалы, выполняйте задания и переходите между шагами. Прогресс сохраняется в этом браузере.')}</div>${c.author?`<div class="m-course-author">${icon('user')}<div><small>Автор курса</small><strong>${esc(c.author)}</strong></div></div>`:''}</section><section class="m-program m-course-syllabus" id="course-program"><div class="m-section-title">${icon('book')}<div><span class="m-kicker">ПРОГРАММА КУРСА</span><h2>Содержание курса</h2></div></div>${program(c,t)}</section><a class="m-text-back" href="${routeFor(t.id,c.branch)}">← Вернуться к курсам ${esc(t.title)}</a></div><aside class="m-course-start"><img class="m-promo-cover" src="${esc(c.image||t.image)}" alt="Обложка курса ${esc(c.title)}">${tags([store.levels[c.level],c.topic])}<h2>${enrolled?'Вы поступили на курс':'Начните обучение'}</h2><dl><div><dt>Уроков</dt><dd>${c.lessonCount}</dd></div>${c.curriculum?`<div><dt>Модулей</dt><dd>${c.curriculum.modules.length}</dd></div><div><dt>Шагов</dt><dd>${stats.totalSteps}</dd></div>`:''}<div><dt>Длительность</dt><dd>${duration(c.durationMinutes)}</dd></div><div><dt>Ветка</dt><dd>${store.branches[c.branch]}</dd></div></dl>${enrolled&&c.curriculum?`<div class="m-promo-progress"><label for="promoCourseProgress">Пройдено ${stats.steps} из ${stats.totalSteps} шагов</label><progress id="promoCourseProgress" max="${stats.totalSteps||1}" value="${stats.steps}"></progress></div>`:''}<button class="m-button m-primary m-enrol-button" type="button" data-action="enrol" data-id="${c.id}">${icon('play')}${enrolled?'Продолжить обучение':'Поступить на курс'}</button>${adminMode?`<a class="m-button" href="${learningRoute(c)}">${icon('code')} Редактировать уроки</a>`:''}<button class="m-button ${inPlan?'m-in-plan':''}" type="button" data-action="plan" data-id="${c.id}">${icon(inPlan?'check':'book')}${inPlan?'В плане · убрать':'Добавить в план обучения'}</button>${c.url?`<a class="m-button m-extra-materials" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">Дополнительные материалы ${icon('arrow')}</a>`:''}<p class="m-plan-hint">Запись на курс и прогресс сохраняются в этом браузере.</p></aside></div>`;
   }
+  function flushWorkspace() {
+    if(!workspace)return true;
+    try{return page.querySelector('#courseWorkspace')?.contentWindow?.kursografBridge?.saveNow()!==false;}catch{notify('Не удалось сохранить материалы. Сохраните резервную копию в редакторе.');return false;}
+  }
+  function renderLearning(c,t,lessonId) {
+    if(!adminMode&&!CourseLearning.enrolled(c.id))try{CourseLearning.enrol(c.id);}catch{notify('Не удалось сохранить запись на курс в браузере.');}
+    const top=`<div class="m-player-context"><a class="m-button" href="${routeFor(t.id,c.branch,c.id)}">← О курсе</a><strong>${esc(c.title)}</strong>${modeSwitch()}</div>`;
+    if(!adminMode&&!c.curriculum)return top+`<div class="m-player-empty"><h1>Уроки курса ещё готовятся</h1><p>Вы поступили на «${esc(c.title)}». Материалы появятся здесь после их добавления автором.</p><a class="m-button" href="${routeFor(t.id,c.branch,c.id)}">Вернуться к описанию курса</a></div>`;
+    const project=structuredClone(c.curriculum||CourseContent.blank(c.title)),session=CourseLearning.session(c.id,project);
+    project.title=c.title;
+    if(!adminMode){if(session.activeId)project.activeId=session.activeId;for(const lesson of project.lessons)if(lesson.steps.some(s=>s.id===session.activeSteps[lesson.id]))lesson.activeStepId=session.activeSteps[lesson.id];}
+    if(lessonId)project.activeId=lessonId;
+    workspace={id:c.id,hash:location.hash,mode:adminMode?'author':'learner',project,attempts:session.attempts,revisions:CourseContent.revisions(project),explicitLesson:!!lessonId,saving:false};
+    return top+`<iframe id="courseWorkspace" class="m-course-workspace" title="${adminMode?'Редактор курса':'Уроки курса'}: ${esc(c.title)}" src="course-player/index.html?v=20261024-course-workspace" allow="clipboard-read; clipboard-write"></iframe>`;
+  }
+  function syncWorkspaceCursor(activeId) {
+    if(!workspace?.explicitLesson||location.hash!==workspace.hash)return;
+    const course=catalog.courses.find(c=>c.id===workspace.id);if(!course?.curriculum?.lessons.some(l=>l.id===activeId))return;
+    const next=learningRoute(course,activeId);if(location.hash===next)return;
+    history.replaceState(null,'',next);workspace.hash=next;current.lessonId=activeId;
+  }
+  const frameMatches=source=>workspace&&page.querySelector('#courseWorkspace')?.contentWindow===source;
+  window.CourseWorkspace={
+    connect(source){if(!frameMatches(source))throw Error('Курс не открыт.');return structuredClone({mode:workspace.mode,project:workspace.project,attempts:workspace.attempts});},
+    saveProject(source,raw){
+      if(!frameMatches(source))return true;
+      if(workspace.mode!=='author')throw Error('Откройте режим администратора.');
+      const course=store.snapshot().courses.find(c=>c.id===workspace.id);if(!course)throw Error('Курс удалён.');
+      const project=CourseContent.normalize(raw);
+      if(course.curriculum&&JSON.stringify(course.curriculum)===JSON.stringify(project)&&course.title===project.title)return true;
+      workspace.saving=true;
+      try{store.saveCourse({...course,title:project.title,curriculum:project});workspace.project=project;workspace.revisions=CourseContent.revisions(project);syncWorkspaceCursor(project.activeId);}finally{workspace.saving=false;}
+      return true;
+    },
+    saveSession(source,data){if(!frameMatches(source)||workspace.mode!=='learner')return true;CourseLearning.save(workspace.id,data,workspace.revisions);syncWorkspaceCursor(data.activeId);return true;}
+  };
   function parseRoute() {
     let parts;try{parts=location.hash.slice(1).split('/').filter(Boolean).map(decodeURIComponent);}catch{return {kind:'missing'};}
     if(parts[0]!=='mastery')return {kind:'home'};
@@ -104,22 +151,29 @@
     if(parts.length===2)return {kind:'technology',tech};
     const branch=parts[2];if(!Object.hasOwn(store.branches,branch))return {kind:'missing'};
     if(parts.length===3)return {kind:branch,tech};
-    const course=coursesFor(tech.id,branch).find(c=>c.id===parts[3]);return course&&parts.length===4?{kind:'course',tech,course}:{kind:'missing'};
+    const course=coursesFor(tech.id,branch).find(c=>c.id===parts[3]);
+    if(course&&parts.length===4)return {kind:'course',tech,course};
+    if(course&&parts[4]==='learn'&&(parts.length===5||(parts.length===6&&course.curriculum?.lessons.some(l=>l.id===parts[5]))))return {kind:'learn',tech,course,lessonId:parts[5]};
+    return {kind:'missing'};
   }
   function render(scroll=false) {
     if(drag)clearDrag();
+    if(workspace&&!flushWorkspace()){history.replaceState(null,'',workspace.hash);return;}
+    workspace=null;
     catalog=store.snapshot();current=parseRoute();
     const active=current.kind!=='home';
     document.querySelector('.dashboard').hidden=active;page.hidden=!active;
     document.querySelectorAll('.sidebar .nav-item').forEach(link=>{const selected=active?link.matches('[data-open-mastery]'):link.matches('a[href="./"]');link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
     document.body.classList.toggle('mastery-open',active);
     page.classList.toggle('m-admin-mode',adminMode);
+    document.body.classList.toggle('m-course-open',current.kind==='learn');
     if(!active){document.title='Инди Кузница — Платформа';return;}
-    document.title=(current.tech?.title||'Древо мастерства')+' — Инди Кузница';
+    document.title=(current.course?.title||current.tech?.title||'Древо мастерства')+' — Инди Кузница';
     if(current.kind==='catalog')page.innerHTML=hero({title:'Древо мастерства',description:'Выберите технологию, изучите основы и закрепите знания в прикладных курсах. У каждой технологии — две ветки: от первых шагов к собственным играм.'})+utility()+toolbar()+`<section id="masteryResults" aria-label="Каталог технологий"></section>`;
     else if(current.kind==='technology')page.innerHTML=renderTechnology(current.tech);
     else if(current.kind==='core')page.innerHTML=coreContent(current.tech);
     else if(current.kind==='applied')page.innerHTML=hero({title:'Прикладные курсы '+current.tech.title,description:'Практические мини-проекты и отдельные игровые механики. Создавайте рабочие системы шаг за шагом и применяйте знания на практике.',t:current.tech,branch:'applied'})+utility()+branchTabs(current.tech,'applied')+toolbar(true)+`<section id="masteryResults" aria-label="Прикладные курсы"></section>`;
+    else if(current.kind==='learn')page.innerHTML=renderLearning(current.course,current.tech,current.lessonId);
     else if(current.kind==='course')page.innerHTML=renderCourse(current.course,current.tech);
     else page.innerHTML=utility()+'<div class="m-empty"><h1>Ветка не найдена</h1><p>Возможно, технология или курс были скрыты из каталога.</p><a class="m-button m-primary" href="'+routeFor()+'">Вернуться к технологиям</a></div>';
     renderResults();
@@ -129,17 +183,24 @@
   page.addEventListener('change',event=>{if(event.target.matches('select[data-filter]')){filterState()[event.target.dataset.filter]=event.target.value;renderResults();}});
   page.addEventListener('click',event=>{
     if(Date.now()<suppressClickUntil&&event.target.closest('a')){event.preventDefault();return;}
+    const section=event.target.closest('[data-promo-section]');if(section){event.preventDefault();page.querySelector('#'+section.dataset.promoSection)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});return;}
     const button=event.target.closest('button');if(!button)return;
     if(button.dataset.action==='view-mode') {
+      if(!flushWorkspace())return;
       adminMode=button.dataset.mode==='admin';
       try{localStorage.setItem('indieforge.mastery.admin',JSON.stringify(adminMode));}catch{notify('Режим изменён до перезагрузки страницы.');}
       render();return;
     }
     if(button.dataset.cardAction){handleCardAction(button);return;}
     if(button.dataset.action==='add-record'&&adminMode){openManager({collection:button.dataset.collection,id:'new'});return;}
-    if(button.dataset.layout){layout=button.dataset.layout;try{localStorage.setItem('indieforge.mastery.layout',JSON.stringify(layout));}catch{notify('Не удалось сохранить выбранный вид.');}renderResults();}
+    if(button.dataset.layout){layout=button.dataset.layout;try{localStorage.setItem('indieforge.mastery.layout',JSON.stringify(layout));}catch{notify('Не удалось сохранить выбранный вид.');}if(current.kind==='core')render();else renderResults();}
     if(button.dataset.action==='reset-filters'){const state=filterState();Object.assign(state,{query:'',category:'all',level:'all',sort:'recommended'});render();}
     if(button.dataset.action==='manage'&&adminMode)openManager();
+    if(button.dataset.action==='enrol'){
+      const course=catalog.courses.find(c=>c.id===button.dataset.id);if(!course)return;
+      try{CourseLearning.enrol(course.id);location.hash=learningRoute(course);}catch{notify('Не удалось сохранить запись на курс. Разрешите хранение данных в браузере.');}
+      return;
+    }
     if(button.dataset.action==='plan'){
       const next=plan.includes(button.dataset.id)?plan.filter(id=>id!==button.dataset.id):[...plan,button.dataset.id];
       try{localStorage.setItem('indieforge.mastery.plan',JSON.stringify(next));plan=next;render();}catch{notify('Не удалось сохранить план в браузере.');}
@@ -370,7 +431,7 @@
     }).join(''):'<div class="m-empty"><h3>Пока ничего нет</h3><p>Добавьте запись или измените фильтр.</p></div>';
   }
   const inputField=(label,name,value,{type='text',required=false,wide=false}={})=>`<label class="m-form-field ${wide?'wide':''}">${label}<input name="${name}" type="${type}" value="${esc(value)}" ${required?'required':''} ${type==='number'?'min="0" max="60000" step="1"':''} ${name==='id'?'readonly':''}></label>`;
-  const areaField=(label,name,value)=>`<label class="m-form-field wide">${label}<textarea name="${name}" rows="3" maxlength="2000">${esc(value)}</textarea></label>`;
+  const areaField=(label,name,value)=>`<label class="m-form-field wide">${label}<textarea name="${name}" rows="3" maxlength="${name==='about'?12000:['audience','requirements','learningFormat'].includes(name)?6000:2000}">${esc(value)}</textarea></label>`;
   const selectField=(label,name,value,entries)=>`<label class="m-form-field">${label}<select name="${name}">${entries.map(([v,t])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
   const mediaSpecs={technology:{width:1200,height:600,ratio:'2:1'},course:{width:1200,height:675,ratio:'16:9'},icon:{width:256,height:256,ratio:'1:1'}};
   const mediaTimers=new Map();
@@ -406,9 +467,10 @@
     const base=record||(courseMode?{id:store.newId('course'),technologyId:manager.tech||catalog.technologies[0]?.id,branch:current.kind==='applied'?'applied':'core',title:'',description:'',level:'beginner',topic:'Основы',lessonCount:0,durationMinutes:0,order:catalog.courses.length+1,published:false,capstone:false,image:'',icon:'',iconUrl:'',url:'',outcomes:[]}:{id:store.newId('technology'),title:'',description:'',category:'engine',tags:[],icon:'tools',color:'#40bfff',image:'assets/mastery/tools.svg',order:catalog.technologies.length+1,published:false});
     if(courseMode&&!catalog.technologies.length){message('Сначала добавьте технологию.');manager.editing=null;renderManager();return;}
     const common=inputField('Название','title',base.title,{required:true,wide:true})+areaField('Описание','description',base.description);
-    const fields=courseMode?selectField('Технология','technologyId',base.technologyId,catalog.technologies.map(t=>[t.id,t.title]))+selectField('Ветка','branch',base.branch,Object.entries(store.branches))+selectField('Уровень','level',base.level,Object.entries(store.levels))+inputField('Тема / механика','topic',base.topic)+inputField('Количество уроков','lessonCount',base.lessonCount,{type:'number'})+inputField('Длительность в минутах','durationMinutes',base.durationMinutes,{type:'number'})+selectField('Значок курса','icon',base.icon||'',[['','Как у технологии'],...store.icons.map(v=>[v,iconLabels[v]])])+inputField('Ссылка на материалы курса (необязательно)','url',base.url,{wide:true})+areaField('Что изучим — каждый пункт с новой строки','outcomes',base.outcomes.join('\n')):selectField('Категория','category',base.category,Object.entries(store.categories))+selectField('Значок','icon',base.icon,store.icons.map(v=>[v,iconLabels[v]]))+inputField('Цвет значка','color',base.color,{type:'color'})+inputField('Метки через запятую','tags',base.tags.join(', '));
+    const fields=courseMode?selectField('Технология','technologyId',base.technologyId,catalog.technologies.map(t=>[t.id,t.title]))+selectField('Ветка','branch',base.branch,Object.entries(store.branches))+selectField('Уровень','level',base.level,Object.entries(store.levels))+inputField('Тема / механика','topic',base.topic)+inputField('Количество уроков','lessonCount',base.lessonCount,{type:'number'})+inputField('Длительность в минутах','durationMinutes',base.durationMinutes,{type:'number'})+selectField('Значок курса','icon',base.icon||'',[['','Как у технологии'],...store.icons.map(v=>[v,iconLabels[v]])])+inputField('Ссылка на материалы курса (необязательно)','url',base.url,{wide:true})+areaField('Что изучим — каждый пункт с новой строки','outcomes',base.outcomes.join('\n'))+areaField('О курсе — подробное описание','about',base.about||'')+areaField('Для кого этот курс','audience',base.audience||'')+areaField('Начальные требования','requirements',base.requirements||'')+areaField('Как проходит обучение','learningFormat',base.learningFormat||'')+inputField('Автор курса','author',base.author||''):selectField('Категория','category',base.category,Object.entries(store.categories))+selectField('Значок','icon',base.icon,store.icons.map(v=>[v,iconLabels[v]]))+inputField('Цвет значка','color',base.color,{type:'color'})+inputField('Метки через запятую','tags',base.tags.join(', '));
     managerBody().innerHTML=`<button class="m-text-back" type="button" data-admin="back">← К списку</button><h3 class="m-edit-title">${record?'Редактировать': 'Добавить'} ${courseMode?'курс':'технологию'}</h3><form id="masteryEditForm" class="m-edit-form">${common}${fields}${courseMode?`<label class="m-publish-toggle wide"><input type="checkbox" name="capstone" ${base.capstone?'checked':''}> Итоговый / дипломный проект (выделенная карточка)</label>`:''}${mediaField('Изображение карточки','image',base.image)}${mediaField('Собственная иконка (необязательно)','iconUrl',base.iconUrl||'')}${inputField('Порядок в списке','order',base.order,{type:'number'})}${inputField('Постоянный ID','id',base.id)}<label class="m-publish-toggle wide"><input type="checkbox" name="published" ${base.published?'checked':''}> Опубликовано — видно ученикам</label><div class="m-form-actions wide"><button class="m-button" type="button" data-admin="back">Отмена</button><button class="m-button m-primary" type="submit">Сохранить ${courseMode?'курс':'технологию'}</button></div></form>`;
     managerBody().querySelector('[name=title]').focus();
+    if(courseMode&&base.curriculum){managerBody().querySelector('[name=lessonCount]').readOnly=true;managerBody().querySelector('[name=lessonCount]').title='Количество уроков определяется программой курса.';}
     for(const name of ['image','iconUrl'])updateMediaPreview(name,managerBody().querySelector(`[name="${name}"]`).value);
   }
   dialog.addEventListener('input',event=>{if(event.target.id==='masteryAdminSearch'){manager.query=event.target.value;renderManagerRows();}if(['image','iconUrl'].includes(event.target.name)){const {name,value}=event.target;clearTimeout(mediaTimers.get(name));mediaTimers.set(name,setTimeout(()=>updateMediaPreview(name,value),200));}});
@@ -434,7 +496,7 @@
     if(event.target.getAttribute('id')!=='masteryEditForm')return;event.preventDefault();
     try {
       const values=Object.fromEntries(new FormData(event.target));values.published=event.target.elements.published.checked;
-      if(manager.tab==='courses'){values.capstone=event.target.elements.capstone.checked;values.outcomes=values.outcomes.split('\n').map(v=>v.trim()).filter(Boolean);store.saveCourse(values);}else{values.tags=values.tags.split(',').map(v=>v.trim()).filter(Boolean);store.saveTechnology(values);}
+      if(manager.tab==='courses'){values.capstone=event.target.elements.capstone.checked;values.outcomes=values.outcomes.split('\n').map(v=>v.trim()).filter(Boolean);store.saveCourse({...catalog.courses.find(c=>c.id===values.id),...values});}else{values.tags=values.tags.split(',').map(v=>v.trim()).filter(Boolean);store.saveTechnology(values);}
       manager.editing=null;renderManager();message('Изменения сохранены.');
     }catch(error){message(error.message);}
   });
@@ -461,12 +523,14 @@
     }
   });
   window.addEventListener('hashchange',()=>{render(true);document.querySelector('.sidebar').classList.remove('open');document.querySelector('.mobile-menu').setAttribute('aria-expanded','false');});
-  window.addEventListener('mastery:catalog-changed',()=>render());
+  window.addEventListener('mastery:catalog-changed',()=>{catalog=store.snapshot();if(!workspace)render();});
+  window.addEventListener('beforeunload',flushWorkspace);
   window.MasteryApp={
     open:()=>{location.hash='/mastery';},
     search(query){const q=query.toLocaleLowerCase('ru'),active=visibleTechs();return [...active.filter(t=>[t.title,...t.tags].join(' ').toLocaleLowerCase('ru').includes(q)).map(t=>({title:t.title+' · Технология',hash:routeFor(t.id)})),...catalog.courses.filter(c=>(adminMode||c.published)&&active.some(t=>t.id===c.technologyId)&&[c.title,c.description].join(' ').toLocaleLowerCase('ru').includes(q)).map(c=>({title:c.title+' · '+catalog.technologies.find(t=>t.id===c.technologyId).title,hash:routeFor(c.technologyId,c.branch,c.id)}))].slice(0,15);},
     // Integration seam for a future lesson player; progress is separate from catalogue data.
-    setCourseProgress(id,lessons){const course=catalog.courses.find(c=>c.id===id);if(!course||!Number.isFinite(lessons))return false;const next={...progress,[id]:Math.min(course.lessonCount,Math.max(0,Math.round(lessons)))};try{localStorage.setItem('indieforge.mastery.progress',JSON.stringify(next));progress=next;render();return true;}catch{return false;}}
+    setCourseProgress(id,lessons){const course=catalog.courses.find(c=>c.id===id);if(!course||!Number.isFinite(lessons))return false;if(course.curriculum){const count=Math.min(course.lessonCount,Math.max(0,Math.round(lessons))),data=CourseLearning.session(id,course.curriculum),attempts=new Map(data.attempts);course.curriculum.lessons.forEach((lesson,index)=>lesson.steps.forEach(step=>attempts.set(JSON.stringify([lesson.id,step.id]),{completed:index<count,answers:[],sort:null,result:null})));try{CourseLearning.save(id,{...data,attempts:[...attempts]},CourseContent.revisions(course.curriculum));render();return true;}catch{return false;}}
+      const next={...progress,[id]:Math.min(course.lessonCount,Math.max(0,Math.round(lessons)))};try{localStorage.setItem('indieforge.mastery.progress',JSON.stringify(next));progress=next;render();return true;}catch{return false;}}
   };
   document.querySelectorAll('[data-open-mastery]').forEach(button=>button.addEventListener('click',()=>{window.MasteryApp.open();document.querySelector('.sidebar').classList.remove('open');document.querySelector('.mobile-menu').setAttribute('aria-expanded','false');}));
   render();

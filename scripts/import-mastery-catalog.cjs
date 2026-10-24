@@ -11,9 +11,11 @@ if(!file){console.error('Usage: node scripts/import-mastery-catalog.cjs [--check
 try{
  const raw=fs.readFileSync(path.resolve(file),'utf8');
  if(Buffer.byteLength(raw)>4*1024*1024)throw Error('Catalogue exceeds 4 MB.');
- const sandbox={window:{},localStorage:{getItem:()=>null},structuredClone,crypto:webcrypto};
+ const sandbox={window:{},localStorage:{getItem:()=>null},structuredClone,TextEncoder,crypto:webcrypto};
  vm.createContext(sandbox);
  vm.runInContext(fs.readFileSync(path.join(root,'mastery-data.js'),'utf8'),sandbox);
+ vm.runInContext(fs.readFileSync(path.join(root,'course-player/course-model.js'),'utf8'),sandbox);
+ vm.runInContext(fs.readFileSync(path.join(root,'course-content.js'),'utf8'),sandbox);
  vm.runInContext(fs.readFileSync(path.join(root,'mastery-catalog.js'),'utf8'),sandbox);
  const data=sandbox.window.MasteryCatalog.validate(JSON.parse(raw));
  if(!check)fs.writeFileSync(path.join(root,'mastery-data.js'),'// Shared catalogue seed. Edit this file or use scripts/import-mastery-catalog.cjs.\nwindow.MASTERY_SEED = '+JSON.stringify(data,null,2)+';\n');

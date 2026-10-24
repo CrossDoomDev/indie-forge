@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>IndieForge — редактор курсов</title>
+  <link rel="stylesheet" href="styles.css?v=20261024-course-workspace">
+  <script src="reorder.js?v=20261024-course-workspace" defer></script>
+  <script src="course-model.js?v=20261024-course-workspace" defer></script>
+  <script src="platform-bridge.js?v=20261024-course-workspace" defer></script>
+  <script src="app.js?v=20261024-course-workspace" defer></script>
+  <link rel="stylesheet" href="step-inline.css?v=20261024-course-workspace">
+  <link rel="stylesheet" href="forge-theme.css?v=20261024-course-workspace">
+  <script src="step-inline.js?v=20261024-course-workspace" defer></script>
+  <link rel="stylesheet" href="platform.css?v=20261024-course-workspace">
+</head>
+<body>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <symbol id="ic-book" viewBox="0 0 24 24"><path d="M12 6.1c-2.4-1.7-5.3-2.1-9-1.7v15c3.7-.4 6.6 0 9 1.7 2.4-1.7 5.3-2.1 9-1.7v-15c-3.7-.4-6.6 0-9 1.7Z"/><path d="M12 6.1v15"/></symbol>
+      <symbol id="ic-bold" viewBox="0 0 24 24"><path d="M7 5h5.5a3.5 3.5 0 0 1 0 7H7z"/><path d="M7 12h6a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+      <symbol id="ic-italic" viewBox="0 0 24 24"><path d="M10 5h9M5 19h9M14.5 5l-5 14"/></symbol>
+      <symbol id="ic-underline" viewBox="0 0 24 24"><path d="M6 4v7a6 6 0 0 0 12 0V4M4 20h16"/></symbol>
+      <symbol id="ic-inline" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5M14 5l-4 14"/></symbol>
+      <symbol id="ic-alignLeft" viewBox="0 0 24 24"><path d="M4 5h16M4 10h10M4 15h16M4 20h10"/></symbol>
+      <symbol id="ic-alignCenter" viewBox="0 0 24 24"><path d="M4 5h16M7 10h10M4 15h16M7 20h10"/></symbol>
+      <symbol id="ic-alignRight" viewBox="0 0 24 24"><path d="M4 5h16M10 10h10M4 15h16M10 20h10"/></symbol>
+      <symbol id="ic-bullet" viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="ic-ordered" viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11M3 4.5h2V9M3 9h4M3 14c0-1.2 3.5-1.7 3.5.2 0 1.1-3.5 2-3.5 4H7"/></symbol>
+      <symbol id="ic-quote" viewBox="0 0 24 24"><path d="M10 6c-3 1.5-4.8 4.3-4.8 8v4h6v-6h-3c.4-1.9 1.5-3.1 3.2-4.1m8.2-1.9c-3 1.5-4.8 4.3-4.8 8v4h6v-6h-3c.4-1.9 1.5-3.1 3.2-4.1"/></symbol>
+      <symbol id="ic-block" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m9 9-3 3 3 3m6-6 3 3-3 3m-1-8-2 10"/></symbol>
+      <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10.2 13.8a4.5 4.5 0 0 0 6.4 0l2.6-2.6a4.5 4.5 0 1 0-6.4-6.4l-1.3 1.3M13.8 10.2a4.5 4.5 0 0 0-6.4 0l-2.6 2.6a4.5 4.5 0 1 0 6.4 6.4l1.3-1.3"/></symbol>
+      <symbol id="ic-divider" viewBox="0 0 24 24"><path d="M4 12h16"/></symbol>
+      <symbol id="ic-clear" viewBox="0 0 24 24"><path d="M4 5h13M10.5 5v13M6 18h9M18 15l-3 5m0-5 3 5"/></symbol>
+      <symbol id="ic-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m4 18 5-5 3 3 3-4 5 6"/></symbol>
+      <symbol id="ic-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12" transform="translate(0 -3)"/></symbol>
+      <symbol id="ic-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5M20 12H10a6 6 0 0 0 0 12" transform="translate(0 -3)"/></symbol>
+      <symbol id="ic-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3"/></symbol>
+    </defs>
+  </svg>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="Редактор курсов">
+        <span class="brand-mark" aria-hidden="true"><svg class="brand-icon" viewBox="0 0 24 24"><use href="#ic-book"></use></svg></span>
+        <div><strong>IndieForge</strong><span class="brand-sub" id="workspaceLabel">Редактор курсов</span></div>
+      </div>
+      <span class="top-divider" aria-hidden="true"></span>
+      <span class="project-name"><span id="projectName">Мой учебный курс</span> <span class="project-badge" data-author-only>Черновик</span></span>
+      <div class="top-actions">
+        <span class="save-state" id="saveState" role="status" aria-live="polite" data-author-only><span class="save-dot"></span> Сохранено локально</span>
+        <button type="button" class="button button-ghost" id="exportJson" title="Сохранить резервную копию всех уроков" data-author-only><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-download"></use></svg> Экспорт курса</button>
+        <button type="button" class="button button-primary" id="exportHtml" data-author-only><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-download"></use></svg> HTML шага</button>
+        <div class="course-view-switch" role="group" aria-label="Вид курса">
+          <button type="button" id="authorView" data-course-view="author" aria-pressed="true">Разработчик</button>
+          <button type="button" id="learnerView" data-course-view="learner" aria-pressed="false">Ученик</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" id="sidebar" aria-label="Навигация по курсу">
+        <div class="sidebar-top">
+          <div class="eyebrow">ВАШ КУРС</div>
+          <label class="visually-hidden" for="courseTitle" data-author-only>Название курса</label>
+          <textarea id="courseTitle" class="course-title" rows="2" maxlength="160" aria-label="Название курса" autocomplete="off" spellcheck="false" data-author-only></textarea>
+          <h2 id="studentCourseTitle" class="course-title" data-learner-only hidden></h2>
+          <p id="courseSummary"></p>
+          <div class="course-progress" data-learner-only hidden><label for="learnerProgress" id="courseProgressLabel"></label><progress id="learnerProgress" value="0" max="1"></progress></div>
+        </div>
+        <div class="section-heading"><span>СОДЕРЖАНИЕ КУРСА</span></div>
+        <p class="outline-help" id="outlineDragHelp" data-author-only>Потяните за ⠿, чтобы переместить модуль или урок.</p>
+        <nav class="lesson-list" id="lessonList" aria-label="Список уроков"></nav>
+        <button id="addModule" class="course-add-module" type="button" data-author-only>＋ Добавить модуль</button>
+        <div class="sidebar-bottom" data-author-only>
+          <label class="toggle-line"><input type="checkbox" id="markdownToggle" checked><span>Markdown при вставке</span></label>
+          <p>Если ChatGPT скопировал Markdown вместо HTML, преобразуем его в оформление.</p>
+          <button type="button" class="button button-secondary button-wide" id="importButton">↑ Импорт HTML / JSON</button>
+          <input id="fileInput" type="file" accept=".html,.htm,.json,text/html,application/json" hidden>
+        </div>
+      </aside>
+
+      <button id="sidebarBackdrop" class="sidebar-backdrop" aria-label="Закрыть содержание курса" hidden></button>
+      <main class="main">
+        <div class="mobile-outline-toggle"><button class="mobile-menu" id="menuToggle" type="button" aria-label="Показать содержание курса" aria-expanded="false" aria-controls="sidebar">☰</button></div>
+        <div class="editor-container">
+          <div class="page-header">
+            <div><div class="eyebrow eyebrow-accent" id="lessonPosition">РЕДАКТИРОВАНИЕ УРОКА</div><h1 id="lessonHeading">Редактор урока</h1></div>
+          </div>
+          <section class="editor-card" aria-label="Редактор">
+            <div class="lesson-stepbar" id="lessonStepbar" aria-label="Шаги урока">
+              <div id="stepTabs" class="lesson-step-tabs" role="tablist" aria-label="Шаги урока"></div>
+              <div class="stepbar-actions" data-author-only>
+                <button type="button" id="addStepInline" class="button button-secondary">＋ Добавить шаг</button>
+                <details class="step-menu" id="stepMenu">
+                  <summary class="button button-secondary" aria-label="Действия с шагом" title="Действия с шагом">⋮</summary>
+                  <div class="step-actions-menu" aria-label="Действия с шагом">
+                    <button type="button" id="stepMoveLeft">← Переместить влево</button>
+                    <button type="button" id="stepMoveRight">→ Переместить вправо</button>
+                    <button type="button" id="stepDuplicate">Дублировать шаг</button>
+                    <button type="button" id="stepDelete" class="danger-text">Удалить шаг</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <div id="stepContent" role="tabpanel"><div id="stepQuizPanel" class="step-quiz-panel" hidden></div><div id="noteEditorRegion"><div class="mode-row" data-author-only>
+              <div class="mode-tabs" role="tablist" aria-label="Режим редактора">
+                <button type="button" id="tabVisual" class="mode-tab active" data-mode="visual" role="tab" aria-selected="true" aria-controls="visualPanel">✎ Редактор</button>
+                <button type="button" id="tabSource" class="mode-tab" data-mode="source" role="tab" aria-selected="false" aria-controls="sourcePanel">&lt;/&gt; HTML</button>
+              </div>
+              <span id="wordCount" class="word-count">0 слов</span>
+            </div>
+
+            <div class="formatbar" id="formatbar" role="toolbar" aria-label="Форматирование текста" data-author-only>
+              <div class="tool-group">
+                <label for="blockType" class="visually-hidden">Тип блока</label>
+                <select id="blockType" title="Выбрать тип абзаца" aria-label="Тип блока">
+                  <option value="p">Обычный текст</option>
+                  <option value="h1">Заголовок 1</option>
+                  <option value="h2">Заголовок 2</option>
+                  <option value="h3">Заголовок 3</option>
+                </select>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group">
+                <button class="tool-button strong" data-command="bold" type="button" title="Жирный (Ctrl+B)" aria-label="Жирный"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-bold"></use></svg></button>
+                <button class="tool-button italic" data-command="italic" type="button" title="Курсив (Ctrl+I)" aria-label="Курсив"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-italic"></use></svg></button>
+                <button class="tool-button underline" data-command="underline" type="button" title="Подчёркнутый (Ctrl+U)" aria-label="Подчёркнутый"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-underline"></use></svg></button>
+                <button class="tool-button code-glyph" data-action="inlineCode" type="button" title="Встроенный код" aria-label="Встроенный код"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-inline"></use></svg></button>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group">
+                <button class="tool-button align-icon" data-command="justifyLeft" type="button" title="По левому краю" aria-label="По левому краю"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-alignLeft"></use></svg></button>
+                <button class="tool-button align-icon" data-command="justifyCenter" type="button" title="По центру" aria-label="По центру"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-alignCenter"></use></svg></button>
+                <button class="tool-button align-icon" data-command="justifyRight" type="button" title="По правому краю" aria-label="По правому краю"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-alignRight"></use></svg></button>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group">
+                <button class="tool-button" data-command="insertUnorderedList" type="button" title="Маркированный список" aria-label="Маркированный список"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-bullet"></use></svg></button>
+                <button class="tool-button" data-command="insertOrderedList" type="button" title="Нумерованный список" aria-label="Нумерованный список"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-ordered"></use></svg></button>
+                <button class="tool-button" data-action="quote" type="button" title="Цитата" aria-label="Цитата"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-quote"></use></svg></button>
+                <button class="tool-button" data-action="codeBlock" type="button" title="Блок кода" aria-label="Блок кода"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-block"></use></svg></button>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group">
+                <button class="tool-button" data-action="link" type="button" title="Вставить ссылку" aria-label="Вставить ссылку"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-link"></use></svg></button>
+                <button class="tool-button" data-command="insertHorizontalRule" type="button" title="Разделитель" aria-label="Разделитель"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-divider"></use></svg></button>
+                <button class="tool-button" data-command="removeFormat" type="button" title="Очистить выделенное форматирование" aria-label="Очистить форматирование"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-clear"></use></svg></button>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group color-tool" id="colorTool">
+                <button type="button" class="tool-button color-trigger" id="textColorButton" aria-label="Цвет текста" aria-expanded="false" title="Цвет выделенного текста">
+                  <span class="color-symbol">A</span><span class="color-indicator" id="colorIndicator"></span>
+                </button>
+                <div class="color-palette" id="colorPalette" hidden>
+                  <strong>Цвет текста</strong>
+                  <div class="color-swatches" id="colorSwatches"></div>
+                  <label class="color-custom-label">Свой цвет <input type="color" id="customTextColor" value="#6759e8"></label>
+                  <button type="button" id="resetTextColor" class="button button-secondary color-reset">Сбросить цвет</button>
+                </div>
+              </div>
+              <div class="tool-group">
+                <button class="tool-button" type="button" id="insertImageButton" title="Добавить изображение из файла" aria-label="Вставить изображение"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-image"></use></svg></button>
+                <input type="file" id="imageFileInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+              </div>
+              <div class="tool-group image-sizing" id="imageSizing" hidden>
+                <button class="tool-button" id="shrinkImage" type="button" title="Уменьшить изображение" aria-label="Уменьшить изображение"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-minus"></use></svg></button>
+                <span id="imageSizeLabel">600 px</span>
+                <button class="tool-button" id="growImage" type="button" title="Увеличить изображение" aria-label="Увеличить изображение"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-plus"></use></svg></button>
+              </div>
+              <span class="tool-divider"></span>
+              <div class="tool-group">
+                <button class="tool-button" data-command="undo" type="button" title="Отменить (Ctrl+Z)" aria-label="Отменить"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-undo"></use></svg></button>
+                <button class="tool-button" data-command="redo" type="button" title="Повторить (Ctrl+Y)" aria-label="Повторить"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#ic-redo"></use></svg></button>
+              </div>
+            </div>
+
+            <div id="visualPanel" class="editor-panel" role="tabpanel" aria-labelledby="tabVisual">
+              <div id="editor" class="rich-editor article-content" contenteditable="true" role="textbox" aria-label="Содержимое шага" aria-multiline="true" spellcheck="true" data-placeholder="Вставьте текст из ChatGPT (Ctrl+V) или начните печатать..."></div>
+            </div>
+            <div id="sourcePanel" class="editor-panel" role="tabpanel" aria-labelledby="tabSource" hidden>
+              <div class="source-help">Редактируй HTML напрямую. При применении опасные теги и атрибуты будут удалены.</div>
+              <div id="htmlSourceShell" class="html-source-shell">
+                <pre id="htmlSourceHighlight" class="html-source-highlight" aria-hidden="true"><code></code></pre>
+                <textarea id="sourceEditor" wrap="soft" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-label="HTML-код шага" placeholder="<h2>Заголовок</h2>"></textarea>
+              </div>
+            </div>
+            <div id="previewPanel" class="editor-panel" aria-label="Материал шага" hidden>
+              <iframe id="previewFrame" title="Материал шага" sandbox="allow-same-origin" loading="eager" scrolling="no"></iframe>
+            </div>
+
+            <div class="editor-footer" data-author-only>
+              <span id="editorHint">💡 Совет: скопируй оформленный ответ ChatGPT и вставь его с помощью Ctrl+V.</span>
+              <span class="html-badge">HTML</span>
+            </div>
+          </div></div>
+          </section>
+
+          <div class="passage-actions" data-learner-only hidden><span id="passageStatus" role="status" aria-live="polite"></span></div>
+          <div class="step-navigation"><button id="previousStep" class="button button-secondary">← Предыдущий шаг</button><span id="stepNavigationLabel"></span><button id="nextStep" class="button button-secondary">Следующий шаг →</button></div>
+          <div class="bottom-bar" data-author-only>
+            <div class="bottom-notice"><span class="notice-icon">◎</span><span>Проект сохраняется в этом браузере. Для резервной копии выгрузи JSON.</span></div>
+            <div class="bottom-buttons" id="noteCopyActions"><button type="button" class="button button-secondary" id="copyRich">⧉ Копировать оформление</button><button type="button" class="button button-secondary" id="copyHtml">⌘ HTML-код</button></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <dialog id="stepTypeDialog" class="step-type-dialog" aria-labelledby="stepTypeHeading"><div class="dialog-heading"><div><div class="eyebrow eyebrow-accent">НОВЫЙ ШАГ</div><h2 id="stepTypeHeading">Что добавим в урок?</h2></div><button type="button" class="link-close" id="closeStepTypes" aria-label="Закрыть выбор типа шага">×</button></div><p>Конспект объясняет материал, задание помогает его закрепить.</p><div id="stepTypeChoices" class="step-type-choices"></div></dialog>
+    <dialog id="structureDialog" class="structure-dialog" aria-labelledby="structureHeading"><form id="structureForm"><div class="dialog-heading"><h2 id="structureHeading"></h2><button type="button" id="closeStructure" class="link-close" aria-label="Закрыть настройки">×</button></div><label for="structureTitle">Название</label><input id="structureTitle" required maxlength="160" autocomplete="off"><div id="structureModuleField"><label for="structureModule">Модуль</label><select id="structureModule"></select></div><div id="structureActions" class="structure-actions"><button type="button" id="structureUp" class="button button-secondary">↑ Выше</button><button type="button" id="structureDown" class="button button-secondary">↓ Ниже</button><button type="button" id="structureDuplicate" class="button button-secondary">Дублировать урок</button><button type="button" id="structureDelete" class="button button-secondary danger-text">Удалить</button></div><p id="structureHelp" class="muted"></p><div class="dialog-actions"><button type="button" id="cancelStructure" class="button button-secondary">Отмена</button><button type="submit" class="button button-primary">Сохранить</button></div></form></dialog>
+    <dialog id="linkDialog" class="link-dialog" aria-labelledby="linkDialogTitle">
+      <form id="linkForm" class="link-form">
+        <div class="link-dialog-header">
+          <div>
+            <div class="eyebrow eyebrow-accent">НАСТРОЙКА ССЫЛКИ</div>
+            <h2 id="linkDialogTitle">Вставить ссылку</h2>
+          </div>
+          <button type="button" class="link-close" id="linkCancelTop" aria-label="Закрыть">×</button>
+        </div>
+        <label for="linkText">Текст ссылки</label>
+        <input id="linkText" name="text" type="text" maxlength="500" required autocomplete="off" placeholder="Текст, который видит читатель">
+        <label for="linkUrl">Адрес (URL)</label>
+        <input id="linkUrl" name="url" type="text" required autocomplete="off" spellcheck="false" placeholder="https://example.com">
+        <p class="link-help" id="linkHelp">Разрешены HTTP, HTTPS, mailto и внутренние ссылки.</p>
+        <div class="link-actions">
+          <button type="button" class="button button-danger" id="linkRemove" hidden>Удалить ссылку</button>
+          <span class="link-spacer"></span>
+          <button type="button" class="button button-secondary" id="linkCancel">Отмена</button>
+          <button type="submit" class="button button-primary" id="linkApply">Применить</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="codeDialog" class="code-dialog" aria-labelledby="codeDialogTitle">
+      <form id="codeForm" class="code-form">
+        <div class="code-modal-header">
+          <div>
+            <div class="eyebrow eyebrow-accent">РЕДАКТОР КОДА</div>
+            <h2 id="codeDialogTitle">Многострочный код</h2>
+          </div>
+          <div class="code-language">
+            <label for="codeLanguage">Язык программирования</label>
+            <select id="codeLanguage">
+              <option value="gdscript">GDScript</option>
+              <option value="none">No Highlight</option>
+            </select>
+          </div>
+        </div>
+        <p class="code-modal-info">Tab — отступ · Shift+Tab — убрать отступ · Enter после «:» — новый уровень вложенности.</p>
+        <label class="visually-hidden" for="codeTextarea">Содержимое блока кода</label>
+        <div class="code-input-shell">
+          <pre id="codeHighlight" class="code-highlight" aria-hidden="true"><code></code></pre>
+          <textarea id="codeTextarea" wrap="off" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-label="Содержимое многострочного кода" placeholder="Введите код здесь..."></textarea>
+        </div>
+        <div class="code-modal-actions">
+          <span class="code-modal-note">Изменения сохраняются только после применения.</span>
+          <button type="button" id="codeCancel" class="button button-secondary">Отменить</button>
+          <button type="submit" id="codeApply" class="button button-primary">Применить</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>

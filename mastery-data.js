@@ -1,5 +1,4 @@
-// Shared catalogue seed. Edit this file to publish changes for all visitors.
-// Course relations use technologyId, branch (core/applied) and order.
+// Shared catalogue seed. Edit this file or use scripts/import-mastery-catalog.cjs.
 window.MASTERY_SEED = {
   "version": 1,
   "technologies": [
@@ -224,8 +223,8 @@ window.MASTERY_SEED = {
       "branch": "core",
       "title": "Godot с нуля",
       "description": "Установка, интерфейс, сцены и узлы. Соберите свою первую интерактивную сцену.",
-      "lessonCount": 12,
-      "durationMinutes": 480,
+      "lessonCount": 3,
+      "durationMinutes": 45,
       "topic": "Основы",
       "level": "beginner",
       "order": 1,
@@ -233,8 +232,99 @@ window.MASTERY_SEED = {
       "image": "assets/mastery/godot.svg",
       "url": "",
       "outcomes": [
-        "Установка, интерфейс, сцены и узлы. Соберите свою первую интерактивную сцену."
-      ]
+        "Ориентироваться в интерфейсе Godot 4",
+        "Различать сцены и узлы",
+        "Создавать и запускать простую 2D-сцену",
+        "Использовать первые команды GDScript"
+      ],
+      "curriculum": {
+        "version": 3,
+        "title": "Godot с нуля",
+        "markdown": true,
+        "activeId": "welcome",
+        "modules": [
+          {
+            "id": "module-1",
+            "title": "Знакомство с Godot",
+            "lessonIds": [
+              "welcome",
+              "scenes"
+            ],
+            "expanded": true
+          },
+          {
+            "id": "module-2",
+            "title": "Первая игра",
+            "lessonIds": [
+              "exercise"
+            ],
+            "expanded": true
+          }
+        ],
+        "lessons": [
+          {
+            "id": "welcome",
+            "title": "Введение в Godot 4",
+            "html": "<h2>Добро пожаловать в первый урок!</h2><p>В этом уроке мы познакомимся с <strong>Godot 4</strong> и подготовим рабочее пространство для создания 2D-игры.</p><p>Для начала установите движок с <a href=\"https://godotengine.org/download/\">официального сайта Godot</a>.</p><h3>Что мы изучим</h3><ul><li>Из чего состоит проект Godot</li><li>Как устроены сцены и узлы</li><li>Как запустить первую сцену</li></ul><p>Пример GDScript:</p><pre><code>extends Node2D\n\nfunc _ready() -&gt; void:\n    print(\"Привет, мир!\")</code></pre><p style=\"text-align: center\"><em>Начнём создавать свою игру!</em></p>",
+            "steps": [
+              {
+                "id": "welcome-note",
+                "type": "note",
+                "title": "Конспект",
+                "question": "",
+                "explanation": "",
+                "correctExplanation": "",
+                "incorrectExplanation": "",
+                "points": 0,
+                "html": "<h2>Добро пожаловать в первый урок!</h2><p>В этом уроке мы познакомимся с <strong>Godot 4</strong> и подготовим рабочее пространство для создания 2D-игры.</p><p>Для начала установите движок с <a href=\"https://godotengine.org/download/\">официального сайта Godot</a>.</p><h3>Что мы изучим</h3><ul><li>Из чего состоит проект Godot</li><li>Как устроены сцены и узлы</li><li>Как запустить первую сцену</li></ul><p>Пример GDScript:</p><pre><code>extends Node2D\n\nfunc _ready() -&gt; void:\n    print(\"Привет, мир!\")</code></pre><p style=\"text-align: center\"><em>Начнём создавать свою игру!</em></p>"
+              }
+            ],
+            "activeStepId": "welcome-note"
+          },
+          {
+            "id": "scenes",
+            "title": "Сцены и узлы",
+            "html": "<h2>Сцены и узлы в Godot</h2><p>Каждая сцена — это дерево <strong>узлов</strong>. Узлы отвечают за отдельные функции игры.</p><ol><li>Создайте сцену.</li><li>Добавьте корневой узел <code>Node2D</code>.</li><li>Сохраните сцену как <code>main.tscn</code>.</li></ol><p>После сохранения сцена готова к дальнейшей работе.</p>",
+            "steps": [
+              {
+                "id": "scenes-note",
+                "type": "note",
+                "title": "Конспект",
+                "question": "",
+                "explanation": "",
+                "correctExplanation": "",
+                "incorrectExplanation": "",
+                "points": 0,
+                "html": "<h2>Сцены и узлы в Godot</h2><p>Каждая сцена — это дерево <strong>узлов</strong>. Узлы отвечают за отдельные функции игры.</p><ol><li>Создайте сцену.</li><li>Добавьте корневой узел <code>Node2D</code>.</li><li>Сохраните сцену как <code>main.tscn</code>.</li></ol><p>После сохранения сцена готова к дальнейшей работе.</p>"
+              }
+            ],
+            "activeStepId": "scenes-note"
+          },
+          {
+            "id": "exercise",
+            "title": "Практическое задание",
+            "html": "<h2>Практика: первая сцена</h2><p>Создайте сцену <code>Player</code> и поместите в неё <code>Sprite2D</code>.</p><h3>Критерии выполнения</h3><ul><li>Сцена открывается без ошибок.</li><li>Корневой узел называется <code>Player</code>.</li><li>Спрайт виден при запуске проекта.</li></ul>",
+            "steps": [
+              {
+                "id": "exercise-note",
+                "type": "note",
+                "title": "Конспект",
+                "question": "",
+                "explanation": "",
+                "correctExplanation": "",
+                "incorrectExplanation": "",
+                "points": 0,
+                "html": "<h2>Практика: первая сцена</h2><p>Создайте сцену <code>Player</code> и поместите в неё <code>Sprite2D</code>.</p><h3>Критерии выполнения</h3><ul><li>Сцена открывается без ошибок.</li><li>Корневой узел называется <code>Player</code>.</li><li>Спрайт виден при запуске проекта.</li></ul>"
+              }
+            ],
+            "activeStepId": "exercise-note"
+          }
+        ]
+      },
+      "about": "Познакомьтесь с рабочим пространством Godot 4: разберитесь, как устроены проекты, сцены и узлы, а затем создайте свою первую сцену. Вводные уроки помогут подготовиться к самостоятельной работе над 2D-игрой.",
+      "audience": "Начинающие разработчики, которые хотят познакомиться с Godot 4 и начать создавать 2D-игры.",
+      "requirements": "Компьютер с установленным Godot 4. Предварительный опыт программирования для вводных уроков не требуется.",
+      "learningFormat": "Текстовые уроки, примеры GDScript и практическое задание. Читайте конспекты до конца и переходите к следующему шагу. Продолжить можно с последнего открытого урока."
     },
     {
       "id": "godot-core-2",

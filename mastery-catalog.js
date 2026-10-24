@@ -29,6 +29,7 @@ window.MasteryCatalog = (() => {
     if(!input||!Array.isArray(input.technologies)||!Array.isArray(input.courses))throw Error('В каталоге нужны массивы technologies и courses.');
     if(input.version!==undefined&&input.version!==1)throw Error('Эта версия каталога не поддерживается.');
     if(input.technologies.length>100||input.courses.length>2000)throw Error('Допускается до 100 технологий и 2000 курсов.');
+    if(new TextEncoder().encode(JSON.stringify(input)).byteLength>4*1024*1024)throw Error('Каталог с материалами превышает 4 МБ. Экспортируйте курс и уменьшите размер изображений.');
     const ids=new Set();
     const technologies=input.technologies.map((t,i)=>{
       if(!t||typeof t!=='object')throw Error('Некорректная технология.');
@@ -41,7 +42,8 @@ window.MasteryCatalog = (() => {
       const id=identifier(c.id);if(courseIds.has(id))throw Error('Повторяется ID курса: '+id);courseIds.add(id);
       const technologyId=identifier(c.technologyId);if(!ids.has(technologyId))throw Error('Для курса «'+plain(c.title)+'» не найдена технология '+technologyId+'.');
       if(!Object.hasOwn(branches,c.branch))throw Error('Ветка курса должна быть core или applied.');
-      return {id,technologyId,branch:c.branch,title:required(c.title,'Название курса'),description:plain(c.description),level:Object.hasOwn(levels,c.level)?c.level:'beginner',topic:plain(c.topic,60)||'Практика',lessonCount:number(c.lessonCount,0,3000),durationMinutes:number(c.durationMinutes,0,60000),order:number(c.order,i,100000),published:c.published!==false,capstone:c.capstone===true,image:safeImage(c.image),icon:icons.includes(c.icon)?c.icon:'',iconUrl:safeImage(c.iconUrl),url:safeUrl(c.url),outcomes:(Array.isArray(c.outcomes)?c.outcomes:[]).slice(0,30).map(v=>plain(v,500)).filter(Boolean)};
+      const curriculum=window.CourseContent.normalize(c.curriculum);
+      return {curriculum,id,technologyId,branch:c.branch,title:required(c.title,'Название курса'),description:plain(c.description),about:plain(c.about,12000),audience:plain(c.audience,6000),requirements:plain(c.requirements,6000),learningFormat:plain(c.learningFormat,6000),author:plain(c.author,160),level:Object.hasOwn(levels,c.level)?c.level:'beginner',topic:plain(c.topic,60)||'Практика',lessonCount:curriculum?curriculum.lessons.length:number(c.lessonCount,0,3000),durationMinutes:number(c.durationMinutes,0,60000),order:number(c.order,i,100000),published:c.published!==false,capstone:c.capstone===true,image:safeImage(c.image),icon:icons.includes(c.icon)?c.icon:'',iconUrl:safeImage(c.iconUrl),url:safeUrl(c.url),outcomes:(Array.isArray(c.outcomes)?c.outcomes:[]).slice(0,30).map(v=>plain(v,500)).filter(Boolean)};
     });
     return {version:1,technologies,courses};
   }

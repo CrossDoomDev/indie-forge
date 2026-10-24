@@ -95,7 +95,7 @@ test('Godot branches derive counts and ordered learning path from the catalogue'
  await expect(page.locator('.m-course-card')).toHaveCount(1);
  await page.locator('.m-card-title').click();
  await expect(page.locator('#masteryPage h1')).toHaveText('Инвентарь');
- await expect(page.locator('.m-materials-pending')).toContainText('Ссылка на материалы пока не добавлена');
+ await expect(page.locator('.m-curriculum-empty')).toContainText('Уроки курса ещё готовятся');
  await page.locator('[data-action=plan]').click();
  await expect(page.locator('[data-action=plan]')).toHaveText('В плане · убрать');
  await page.reload();
@@ -131,7 +131,7 @@ test('owner can add a technology and both course branches, edit classification a
  await page.reload();
  await page.goto('/#/mastery/'+technology+'/core/'+core);
  await expect(page.locator('.m-program li')).toHaveCount(2);
- await expect(page.locator('.m-course-start a')).toHaveAttribute('href','https://example.com/my-course');
+ await expect(page.locator('.m-course-start .m-extra-materials')).toHaveAttribute('href','https://example.com/my-course');
  await page.goto('/#/mastery/'+technology);
  await manager(page);
  await page.locator(`[data-admin=edit][data-id="${applied}"]`).click();
