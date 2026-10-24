@@ -70,6 +70,7 @@
     return `<article class="m-course-card ${adminMode?'m-editable-card':''} ${!c.published||!t.published?'m-hidden-card':''} ${core?'m-path-card':''} ${pct===100?'m-course-complete':''} ${core&&c.capstone?'m-capstone':''}" data-course="${c.id}" data-reorder-id="${c.id}" data-collection="courses"><a class="m-course-art" href="${url}" tabindex="-1" aria-hidden="true"><img src="${esc(image)}" alt="" loading="lazy"><span class="m-course-logo">${logo({...t,icon:c.icon||t.icon,iconUrl:c.iconUrl||(c.icon?'':t.iconUrl)})}</span></a>${core?`<span class="m-path-number">${index+1}</span>`:''}<div class="m-course-copy"><a class="m-card-title" href="${url}">${esc(c.title)}</a><p>${esc(c.description)}</p>${!core?tags(['Мини-проект',store.levels[c.level],c.topic]):''}<div class="m-course-meta"><span>${icon('book')}${lessonCount(c.lessonCount)}</span><span>${icon('refresh')}${duration(c.durationMinutes)}</span></div>${core?`<div class="m-course-progress"><progress value="${pct}" max="100" aria-label="Прогресс курса ${esc(c.title)}"></progress><span>${pct}%</span></div>`:''}</div><a class="m-card-arrow" href="${url}" aria-label="Подробнее: ${esc(c.title)}">${icon('arrow')}</a>${cardControls(c,'courses',t)}</article>`;
   }
   function renderResults() {
+    if(drag)clearDrag();
     const results=page.querySelector('#masteryResults');if(!results)return;
     const state=filterState(),q=state.query.toLocaleLowerCase('ru');
     const items=current.kind==='catalog'?visibleTechs().filter(t=>(state.category==='all'||state.category===t.category)&&(state.level==='all'||coursesFor(t.id).some(c=>c.level===state.level))&&[t.title,t.description,...t.tags].join(' ').toLocaleLowerCase('ru').includes(q)):coursesFor(current.tech.id,'applied').filter(c=>(state.category==='all'||c.topic===state.category)&&(state.level==='all'||c.level===state.level)&&[c.title,c.description,c.topic].join(' ').toLocaleLowerCase('ru').includes(q));
@@ -106,6 +107,7 @@
     const course=coursesFor(tech.id,branch).find(c=>c.id===parts[3]);return course&&parts.length===4?{kind:'course',tech,course}:{kind:'missing'};
   }
   function render(scroll=false) {
+    if(drag)clearDrag();
     catalog=store.snapshot();current=parseRoute();
     const active=current.kind!=='home';
     document.querySelector('.dashboard').hidden=active;page.hidden=!active;
@@ -156,10 +158,10 @@
     const record=catalog[collection].find(v=>v.id===id);
     return record?ordered(catalog[collection].filter(v=>collection==='technologies'||(v.technologyId===record.technologyId&&v.branch===record.branch))):[];
   }
-  function moveRecord(collection,id,targetId) {
+  function moveRecord(collection,id,targetId,placement) {
     if(!canReorder())return;
     try {
-      const changed=collection==='technologies'?store.moveTechnology(id,targetId):store.moveCourse(id,targetId);
+      const changed=collection==='technologies'?store.moveTechnology(id,targetId,placement):store.moveCourse(id,targetId,placement);
       if(changed){notify('Порядок сохранён.');page.querySelector(`[data-drag-id="${id}"]`)?.focus({preventScroll:true});}
     }catch(error){notify(error.message);}
   }
@@ -184,36 +186,134 @@
     }catch(error){notify(error.message);}
   }
 
-  // Desktop drag, touch/pen drag and keyboard ordering share the same atomic store operation.
+  // Preview ordering in the DOM; commit once the pointer is released in the catalogue.
   let drag=null,touchDrag=null,mouseDragHandle=null,suppressClickUntil=0;
   const dropCard=target=>target?.closest('[data-reorder-id]');
+  const dragItems=()=>drag?[...drag.container.children].filter(el=>el.matches('[data-reorder-id]')&&el!==drag.source):[];
   function clearDrag() {
-    page.querySelectorAll('.m-dragging,.m-drop-target').forEach(el=>el.classList.remove('m-dragging','m-drop-target'));
-    document.body.classList.remove('m-is-dragging');drag=null;touchDrag=null;mouseDragHandle=null;
+    if(drag) {
+      cancelAnimationFrame(drag.activationFrame);
+      cancelAnimationFrame(drag.scrollFrame);
+      drag.animations.forEach(animation=>animation.cancel());
+      drag.source.classList.remove('m-drag-source');
+      drag.source.style.width=drag.sourceWidth;
+      drag.container.append(...drag.originalChildren);
+      drag.placeholder.remove();drag.ghost.remove();
+    }
+    document.body.classList.remove('m-is-dragging');
+    drag=null;touchDrag=null;mouseDragHandle=null;
   }
-  function markDrop(target) {
-    page.querySelectorAll('.m-drop-target').forEach(el=>el.classList.remove('m-drop-target'));
-    const card=dropCard(target);
-    if(!card||!drag||card.dataset.collection!==drag.collection||card.dataset.reorderId===drag.id)return null;
-    if(!reorderGroup(drag.collection,drag.id).some(v=>v.id===card.dataset.reorderId))return null;
-    card.classList.add('m-drop-target');return card;
+  function makeDragGhost(source,container,rect,touch) {
+    const host=document.createElement('div');
+    host.className='mastery-page m-drag-ghost '+(container.classList.contains('m-list')?'m-list':'');
+    host.setAttribute('aria-hidden','true');host.inert=true;
+    host.style.width=rect.width+'px';host.style.height=rect.height+'px';
+    const clone=source.cloneNode(true);
+    clone.querySelectorAll('[open]').forEach(el=>el.removeAttribute('open'));
+    [clone,...clone.querySelectorAll('*')].forEach(el=>{
+      for(const name of ['id','data-reorder-id','data-technology','data-course','data-drag-id'])el.removeAttribute(name);
+      if(el.hasAttribute('draggable'))el.draggable=false;
+    });
+    host.append(clone);document.body.append(host);
+    host.classList.toggle('m-touch-ghost',touch);
+    return host;
+  }
+  function beginDrag(handle,touch=false,x=0,y=0) {
+    if(!canReorder())return false;
+    const source=dropCard(handle),container=source?.parentElement;if(!container)return false;
+    const rect=source.getBoundingClientRect(),placeholder=document.createElement('div');
+    placeholder.className='m-sort-placeholder';placeholder.setAttribute('aria-hidden','true');
+    placeholder.style.minHeight=rect.height+'px';
+    placeholder.style.gridColumn=getComputedStyle(source).gridColumn;
+    placeholder.innerHTML=icon('grip')+'<span>Отпустите карточку здесь</span>';
+    const originalChildren=[...container.children],ghost=makeDragGhost(source,container,rect,touch);
+    drag={id:handle.dataset.dragId,collection:handle.dataset.collection,source,container,placeholder,ghost,originalChildren,sourceWidth:source.style.width,width:rect.width,animations:new Map(),offsetX:x-rect.left,offsetY:y-rect.top,touch,point:{x,y},scrollFrame:0,activationFrame:0,active:false};
+    if(touch)activateDragLayout();else drag.activationFrame=requestAnimationFrame(activateDragLayout);
+    document.body.classList.add('m-is-dragging');
+    if(touch)positionTouchGhost(x,y);
+    return true;
+  }
+  function activateDragLayout() {
+    if(!drag||drag.active)return;
+    drag.active=true;
+    drag.source.before(drag.placeholder);drag.source.style.width=drag.width+'px';drag.source.classList.add('m-drag-source');
+  }
+  // Use final layout coordinates while neighbouring cards animate towards their new slots.
+  function slotRect(el) {
+    const rect=el.getBoundingClientRect(),transform=getComputedStyle(el).transform;
+    const matrix=transform==='none'?null:new DOMMatrixReadOnly(transform);
+    return {left:rect.left-(matrix?.m41||0),top:rect.top-(matrix?.m42||0),width:rect.width,height:rect.height};
+  }
+  function acceptsDrop(x,y) {
+    if(!drag||!canReorder())return false;
+    const rect=drag.container.getBoundingClientRect();
+    return x>=rect.left-8&&x<=rect.right+8&&y>=rect.top-12&&y<=rect.bottom+12;
+  }
+  function shiftPlaceholder(next) {
+    const {container,placeholder,animations}=drag;
+    if(placeholder.nextElementSibling===next||(!next&&!placeholder.nextElementSibling))return;
+    const items=dragItems(),before=new Map(items.map(el=>[el,el.getBoundingClientRect()]));
+    animations.forEach(animation=>animation.cancel());animations.clear();
+    container.insertBefore(placeholder,next);
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    items.forEach(el=>{
+      const from=before.get(el),to=el.getBoundingClientRect(),dx=from.left-to.left,dy=from.top-to.top;
+      if(Math.abs(dx)+Math.abs(dy)<1)return;
+      animations.set(el,el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:180,easing:'cubic-bezier(.2,.75,.3,1)'}));
+    });
+  }
+  function previewDrop(x,y) {
+    if(!acceptsDrop(x,y))return false;
+    activateDragLayout();
+    const placeholder=slotRect(drag.placeholder);
+    if(x>=placeholder.left&&x<=placeholder.left+placeholder.width&&y>=placeholder.top&&y<=placeholder.top+placeholder.height)return true;
+    const items=dragItems(),rects=items.map(el=>({el,...slotRect(el)}));
+    const columns=getComputedStyle(drag.container).gridTemplateColumns.split(' ').length;
+    if(drag.container.classList.contains('m-list')||columns===1) {
+      shiftPlaceholder(rects.find(r=>y<r.top+r.height/2)?.el||null);
+      return true;
+    }
+    const rows=[];
+    rects.forEach(r=>{let row=rows.find(row=>Math.abs(row.top-r.top)<6);if(!row){row={top:r.top,bottom:r.top+r.height,items:[]};rows.push(row);}row.bottom=Math.max(row.bottom,r.top+r.height);row.items.push(r);});
+    const row=rows.find((row,i)=>y<=(row.bottom+(rows[i+1]?.top??row.bottom))/2)||rows.at(-1);
+    if(!row)return true;
+    const next=row.items.find(r=>x<r.left+r.width/2)?.el;
+    if(next)shiftPlaceholder(next);
+    else{const last=row.items.at(-1).el,index=items.indexOf(last);shiftPlaceholder(items[index+1]||null);}
+    return true;
+  }
+  function finishDrag(x,y) {
+    if(!drag)return;
+    if(!previewDrop(x,y)){clearDrag();return;}
+    const {id,collection,placeholder}=drag;
+    let next=placeholder.nextElementSibling;while(next&&!next.matches('[data-reorder-id]:not(.m-drag-source)'))next=next.nextElementSibling;
+    let previous=placeholder.previousElementSibling;while(previous&&!previous.matches('[data-reorder-id]:not(.m-drag-source)'))previous=previous.previousElementSibling;
+    const target=next||previous,placement=next?'before':'after';
+    clearDrag();suppressClickUntil=Date.now()+350;
+    if(target)moveRecord(collection,id,target.dataset.reorderId,placement);
+  }
+  function positionTouchGhost(x,y) {
+    if(!drag)return;
+    drag.point={x,y};
+    const width=drag.ghost.offsetWidth;
+    drag.ghost.style.left=Math.max(8,Math.min(innerWidth-width-8,x-drag.offsetX))+'px';
+    drag.ghost.style.top=y-Math.min(drag.offsetY,80)+'px';
+  }
+  function touchAutoScroll() {
+    if(!drag?.touch)return;
+    const {x,y}=drag.point;
+    const amount=y<110?-Math.min(18,(110-y)/3):y>innerHeight-80?Math.min(18,(y-innerHeight+80)/3):0;
+    if(amount){window.scrollBy(0,amount);previewDrop(x,y);}
+    drag.scrollFrame=requestAnimationFrame(touchAutoScroll);
   }
   page.addEventListener('dragstart',event=>{
-    // Keep the pressed handle when browser auto-scroll moves the card before dragstart.
-    const handle=event.target.closest('[data-drag-id]')||mouseDragHandle;
-    mouseDragHandle=null;
-    if(!handle||!canReorder()){event.preventDefault();return;}
-    drag={id:handle.dataset.dragId,collection:handle.dataset.collection};
+    const handle=event.target.closest('[data-drag-id]')||mouseDragHandle;mouseDragHandle=null;
+    if(!handle||!beginDrag(handle,false,event.clientX,event.clientY)){event.preventDefault();return;}
     event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',drag.id);
-    const card=dropCard(handle);event.dataTransfer.setDragImage(card,24,24);
-    card.classList.add('m-dragging');document.body.classList.add('m-is-dragging');
+    event.dataTransfer.setDragImage(drag.ghost,Math.max(0,Math.min(drag.width,drag.offsetX)),Math.max(0,Math.min(drag.ghost.offsetHeight,drag.offsetY)));
   });
-  page.addEventListener('dragover',event=>{if(markDrop(event.target)){event.preventDefault();event.dataTransfer.dropEffect='move';}});
-  page.addEventListener('drop',event=>{
-    const card=markDrop(event.target);if(!card)return;
-    event.preventDefault();const source=drag,target=card.dataset.reorderId;
-    clearDrag();suppressClickUntil=Date.now()+350;moveRecord(source.collection,source.id,target);
-  });
+  page.addEventListener('dragover',event=>{if(previewDrop(event.clientX,event.clientY)){event.preventDefault();event.dataTransfer.dropEffect='move';}});
+  page.addEventListener('drop',event=>{if(acceptsDrop(event.clientX,event.clientY)){event.preventDefault();finishDrag(event.clientX,event.clientY);}});
   page.addEventListener('dragend',clearDrag);
   page.addEventListener('keydown',event=>{
     const handle=event.target.closest('[data-drag-id]');
@@ -227,24 +327,24 @@
     if(event.pointerType==='mouse'){mouseDragHandle=handle&&canReorder()?handle:null;return;}
     if(!handle||!canReorder())return;
     event.preventDefault();handle.setPointerCapture(event.pointerId);
-    touchDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,handle,active:false,target:null};
+    touchDrag={pointerId:event.pointerId,x:event.clientX,y:event.clientY,handle,active:false};
   });
   page.addEventListener('pointermove',event=>{
     if(!touchDrag||touchDrag.pointerId!==event.pointerId)return;
-    if(!touchDrag.active&&Math.hypot(event.clientX-touchDrag.x,event.clientY-touchDrag.y)<8)return;
-    touchDrag.active=true;
-    drag={id:touchDrag.handle.dataset.dragId,collection:touchDrag.handle.dataset.collection};
-    dropCard(touchDrag.handle).classList.add('m-dragging');document.body.classList.add('m-is-dragging');
-    touchDrag.target=markDrop(document.elementFromPoint(event.clientX,event.clientY))?.dataset.reorderId;
-    if(event.clientY<110)window.scrollBy(0,-20);else if(event.clientY>innerHeight-70)window.scrollBy(0,20);
+    if(!touchDrag.active) {
+      if(Math.hypot(event.clientX-touchDrag.x,event.clientY-touchDrag.y)<8)return;
+      touchDrag.active=beginDrag(touchDrag.handle,true,touchDrag.x,touchDrag.y);
+      if(!touchDrag.active)return;
+      drag.scrollFrame=requestAnimationFrame(touchAutoScroll);
+    }
+    positionTouchGhost(event.clientX,event.clientY);previewDrop(event.clientX,event.clientY);
   });
   page.addEventListener('pointerup',event=>{
-    mouseDragHandle=null;
-    if(!touchDrag||touchDrag.pointerId!==event.pointerId)return;
-    const source=drag,target=touchDrag.target,active=touchDrag.active;
-    clearDrag();if(active){suppressClickUntil=Date.now()+350;if(target)moveRecord(source.collection,source.id,target);}
+    mouseDragHandle=null;if(!touchDrag||touchDrag.pointerId!==event.pointerId)return;
+    if(touchDrag.active)finishDrag(event.clientX,event.clientY);else clearDrag();
   });
   page.addEventListener('pointercancel',()=>{if(touchDrag)clearDrag();});
+  window.addEventListener('resize',()=>{if(drag)clearDrag();});
   document.addEventListener('click',event=>{page.querySelectorAll('.m-card-menu[open]').forEach(menu=>{if(!menu.contains(event.target))menu.open=false;});});
 
   // Catalogue management: the same repository powers every public view.
@@ -272,12 +372,32 @@
   const inputField=(label,name,value,{type='text',required=false,wide=false}={})=>`<label class="m-form-field ${wide?'wide':''}">${label}<input name="${name}" type="${type}" value="${esc(value)}" ${required?'required':''} ${type==='number'?'min="0" max="60000" step="1"':''} ${name==='id'?'readonly':''}></label>`;
   const areaField=(label,name,value)=>`<label class="m-form-field wide">${label}<textarea name="${name}" rows="3" maxlength="2000">${esc(value)}</textarea></label>`;
   const selectField=(label,name,value,entries)=>`<label class="m-form-field">${label}<select name="${name}">${entries.map(([v,t])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
+  const mediaSpecs={technology:{width:1200,height:600,ratio:'2:1'},course:{width:1200,height:675,ratio:'16:9'},icon:{width:256,height:256,ratio:'1:1'}};
+  const mediaTimers=new Map();
+  function mediaSpec(name){return mediaSpecs[name==='iconUrl'?'icon':manager.tab==='courses'?'course':'technology'];}
   function mediaField(label,name,value) {
-    return `<div class="m-media-field wide"><label class="m-form-field">${label}<input name="${name}" value="${esc(value)}" placeholder="Путь к файлу или HTTPS-ссылка" aria-label="${label}"></label><div class="m-media-tools"><img data-media-preview="${name}" ${value?`src="${esc(value)}"`:'hidden'} alt="Предпросмотр: ${label}"><label class="m-button m-upload-label">Выбрать файл<input type="file" data-media-upload="${name}" accept="image/png,image/jpeg,image/webp,image/gif"></label><button class="m-button" type="button" data-clear-media="${name}">Убрать</button><small>PNG, JPEG, WebP, GIF · до 400 КБ</small></div></div>`;
+    const spec=mediaSpec(name);
+    return `<div class="m-media-field wide"><label class="m-form-field">${label}<input name="${name}" value="${esc(value)}" placeholder="Путь к файлу или HTTPS-ссылка" aria-label="${label}" aria-describedby="mastery-${name}-guide mastery-${name}-size"></label><div class="m-media-tools"><img data-media-preview="${name}" ${value?`src="${esc(value)}"`:'hidden'} alt="Предпросмотр: ${label}"><label class="m-button m-upload-label">Выбрать файл<input type="file" data-media-upload="${name}" accept="image/png,image/jpeg,image/webp,image/gif" aria-describedby="mastery-${name}-guide"></label><button class="m-button" type="button" data-clear-media="${name}">Убрать</button><small>PNG, JPEG, WebP, GIF · до 400 КБ</small></div><p class="m-media-guidance" id="mastery-${name}-guide">Рекомендуемое разрешение: <strong>${spec.width} × ${spec.height} px</strong> · пропорции <strong>${spec.ratio}</strong>. Изображение вписывается целиком, без обрезки и искажения пропорций.</p><p class="m-media-size" id="mastery-${name}-size" data-media-size="${name}" role="status" aria-live="polite">${value?'Определяем размеры изображения…':'Изображение не выбрано.'}</p></div>`;
   }
   function updateMediaPreview(name,value) {
-    const preview=dialog.querySelector(`[data-media-preview="${name}"]`);if(!preview)return;
-    try{const safe=store.safeImage(value);preview.hidden=!safe;if(safe)preview.src=safe;else preview.removeAttribute('src');}catch{preview.hidden=true;}
+    clearTimeout(mediaTimers.get(name));
+    const preview=dialog.querySelector(`[data-media-preview="${name}"]`),status=dialog.querySelector(`[data-media-size="${name}"]`);
+    if(!preview||!status)return;
+    const token=Symbol();preview.mediaRequest=token;
+    const valid=()=>preview.isConnected&&preview.mediaRequest===token;
+    let safe;
+    try{safe=store.safeImage(value);}catch(error){preview.hidden=true;status.textContent=error.message;status.dataset.fit='error';return;}
+    if(!safe){preview.hidden=true;preview.removeAttribute('src');status.textContent='Изображение не выбрано.';status.dataset.fit='empty';return;}
+    preview.hidden=false;preview.src=safe;status.textContent='Определяем размеры изображения…';status.dataset.fit='loading';
+    const probe=new Image(),spec=mediaSpec(name);
+    probe.onload=()=>{
+      if(!valid())return;
+      const width=probe.naturalWidth,height=probe.naturalHeight,ratioMatches=Math.abs(width/height-spec.width/spec.height)/(spec.width/spec.height)<.015,vector=/\.svg(?:[?#]|$)/i.test(safe);
+      status.dataset.fit=ratioMatches?'match':'different';
+      status.textContent=`Выбрано: ${width} × ${height} px. `+(ratioMatches?'Пропорции подходят.':`Пропорции отличаются от ${spec.ratio}: по краям останутся поля, изображение сохранится целиком.`)+(vector?' Векторное изображение масштабируется без потери чёткости.':width<spec.width||height<spec.height?' Размер меньше рекомендуемого; для чёткости используйте изображение крупнее.':'');
+    };
+    probe.onerror=()=>{if(valid()){preview.hidden=true;status.dataset.fit='error';status.textContent='Не удалось загрузить изображение и определить его размеры. Проверьте файл или ссылку.';}};
+    probe.src=safe;
   }
   function renderEdit(){
     const courseMode=manager.tab==='courses';
@@ -289,8 +409,9 @@
     const fields=courseMode?selectField('Технология','technologyId',base.technologyId,catalog.technologies.map(t=>[t.id,t.title]))+selectField('Ветка','branch',base.branch,Object.entries(store.branches))+selectField('Уровень','level',base.level,Object.entries(store.levels))+inputField('Тема / механика','topic',base.topic)+inputField('Количество уроков','lessonCount',base.lessonCount,{type:'number'})+inputField('Длительность в минутах','durationMinutes',base.durationMinutes,{type:'number'})+selectField('Значок курса','icon',base.icon||'',[['','Как у технологии'],...store.icons.map(v=>[v,iconLabels[v]])])+inputField('Ссылка на материалы курса (необязательно)','url',base.url,{wide:true})+areaField('Что изучим — каждый пункт с новой строки','outcomes',base.outcomes.join('\n')):selectField('Категория','category',base.category,Object.entries(store.categories))+selectField('Значок','icon',base.icon,store.icons.map(v=>[v,iconLabels[v]]))+inputField('Цвет значка','color',base.color,{type:'color'})+inputField('Метки через запятую','tags',base.tags.join(', '));
     managerBody().innerHTML=`<button class="m-text-back" type="button" data-admin="back">← К списку</button><h3 class="m-edit-title">${record?'Редактировать': 'Добавить'} ${courseMode?'курс':'технологию'}</h3><form id="masteryEditForm" class="m-edit-form">${common}${fields}${courseMode?`<label class="m-publish-toggle wide"><input type="checkbox" name="capstone" ${base.capstone?'checked':''}> Итоговый / дипломный проект (выделенная карточка)</label>`:''}${mediaField('Изображение карточки','image',base.image)}${mediaField('Собственная иконка (необязательно)','iconUrl',base.iconUrl||'')}${inputField('Порядок в списке','order',base.order,{type:'number'})}${inputField('Постоянный ID','id',base.id)}<label class="m-publish-toggle wide"><input type="checkbox" name="published" ${base.published?'checked':''}> Опубликовано — видно ученикам</label><div class="m-form-actions wide"><button class="m-button" type="button" data-admin="back">Отмена</button><button class="m-button m-primary" type="submit">Сохранить ${courseMode?'курс':'технологию'}</button></div></form>`;
     managerBody().querySelector('[name=title]').focus();
+    for(const name of ['image','iconUrl'])updateMediaPreview(name,managerBody().querySelector(`[name="${name}"]`).value);
   }
-  dialog.addEventListener('input',event=>{if(event.target.id==='masteryAdminSearch'){manager.query=event.target.value;renderManagerRows();}if(['image','iconUrl'].includes(event.target.name))updateMediaPreview(event.target.name,event.target.value);});
+  dialog.addEventListener('input',event=>{if(event.target.id==='masteryAdminSearch'){manager.query=event.target.value;renderManagerRows();}if(['image','iconUrl'].includes(event.target.name)){const {name,value}=event.target;clearTimeout(mediaTimers.get(name));mediaTimers.set(name,setTimeout(()=>updateMediaPreview(name,value),200));}});
   dialog.addEventListener('change',async event=>{
     if(event.target.dataset.mediaUpload) {
       const file=event.target.files[0],name=event.target.dataset.mediaUpload;event.target.value='';if(!file)return;

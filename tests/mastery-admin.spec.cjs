@@ -8,14 +8,17 @@ async function action(page,id,action) {
 }
 async function drag(page,sourceId,targetId) {
  const source=page.locator(`[data-drag-id="${sourceId}"]`),target=page.locator(`[data-reorder-id="${targetId}"]`);
- await source.scrollIntoViewIfNeeded();const from=await source.boundingBox();
+ const placement=await source.evaluate((handle,targetId)=>{const siblings=[...handle.closest('[data-reorder-id]').parentElement.children];return siblings.indexOf(handle.closest('[data-reorder-id]'))<siblings.findIndex(el=>el.dataset.reorderId===targetId)?.75:.25;},targetId);
+ await source.evaluate(el=>el.scrollIntoView({block:'center'}));const from=await source.boundingBox();
  const x=from.x+from.width/2,y=from.y+from.height/2;
  await page.mouse.move(x,y);await page.mouse.down();
  // Start native dragging before bringing a distant card into the viewport.
  await page.mouse.move(x-12,y,{steps:3});
  await target.scrollIntoViewIfNeeded();const to=await target.boundingBox();
- await page.mouse.move(to.x+to.width/2,to.y+to.height/2,{steps:8});
- await page.mouse.move(to.x+to.width/2+1,to.y+to.height/2);await page.mouse.up();
+ const vertical=await target.evaluate(el=>el.parentElement.classList.contains('m-list')||getComputedStyle(el.parentElement).gridTemplateColumns.split(' ').length===1);
+ const dropX=to.x+to.width*(vertical ? 0.5 : placement),dropY=to.y+to.height*(vertical ? placement : 0.5);
+ await page.mouse.move(dropX,dropY,{steps:8});
+ await page.mouse.move(dropX+1,dropY+1);await page.mouse.up();
 }
 const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jB1sAAAAASUVORK5CYII=','base64');
 
@@ -156,7 +159,7 @@ test('touch dragging reorders list cards on a phone without opening a technology
  await page.locator('[data-technology=godot]').evaluate(el=>{el.scrollIntoView({block:'start'});window.scrollBy(0,-120);});
  const source=await page.locator('[data-drag-id=godot]').boundingBox(),target=await page.locator('[data-technology=gamemaker]').boundingBox();
  const cdp=await context.newCDPSession(page);
- const from={x:source.x+source.width/2,y:source.y+source.height/2},to={x:target.x+target.width/2,y:target.y+target.height/2};
+ const from={x:source.x+source.width/2,y:source.y+source.height/2},to={x:target.x+target.width/2,y:target.y+target.height*.75};
  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[from]});
  for(let step=1;step<=12;step++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:from.x+(to.x-from.x)*step/12,y:from.y+(to.y-from.y)*step/12}]});
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});

@@ -62,13 +62,16 @@ window.MasteryCatalog = (() => {
     if(collection==='technologies'&&cascade)next.courses=next.courses.filter(c=>c.technologyId!==id);
     commit(next);
   }
-  function move(collection,id,targetId) {
+  function move(collection,id,targetId,placement) {
     const next=structuredClone(catalog),record=next[collection].find(v=>v.id===id),target=next[collection].find(v=>v.id===targetId);
     if(!record||!target||id===targetId)return false;
     if(collection==='courses'&&(record.technologyId!==target.technologyId||record.branch!==target.branch))throw Error('Порядок меняется внутри одной ветки технологии.');
     const group=next[collection].filter(v=>collection==='technologies'||(v.technologyId===record.technologyId&&v.branch===record.branch)).sort((a,b)=>a.order-b.order||a.title.localeCompare(b.title,'ru'));
     const from=group.findIndex(v=>v.id===id),to=group.findIndex(v=>v.id===targetId);
-    group.splice(from,1);group.splice(to,0,record);
+    group.splice(from,1);
+    const destination=placement==='before'||placement==='after'?group.findIndex(v=>v.id===targetId)+(placement==='after'?1:0):to;
+    group.splice(destination,0,record);
+    if(group.findIndex(v=>v.id===id)===from)return false;
     group.forEach((v,i)=>v.order=i+1);
     commit(next);
     return true;
@@ -78,7 +81,7 @@ window.MasteryCatalog = (() => {
     snapshot:()=>structuredClone(catalog),recoveryMessage:()=>recovery,
     saveTechnology:record=>upsert('technologies',record),saveCourse:record=>upsert('courses',record),
     deleteTechnology:(id,options)=>remove('technologies',id,options),deleteCourse:id=>remove('courses',id),
-    moveTechnology:(id,targetId)=>move('technologies',id,targetId),moveCourse:(id,targetId)=>move('courses',id,targetId),
+    moveTechnology:(id,targetId,placement)=>move('technologies',id,targetId,placement),moveCourse:(id,targetId,placement)=>move('courses',id,targetId,placement),
     importCatalog:commit,
     reset:()=>commit(window.MASTERY_SEED)
   };
