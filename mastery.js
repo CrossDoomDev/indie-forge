@@ -140,7 +140,14 @@
       try{store.saveCourse({...course,title:project.title,curriculum:project});workspace.project=project;workspace.revisions=CourseContent.revisions(project);syncWorkspaceCursor(project.activeId);}finally{workspace.saving=false;}
       return true;
     },
-    saveSession(source,data){if(!frameMatches(source)||workspace.mode!=='learner')return true;CourseLearning.save(workspace.id,data,workspace.revisions);syncWorkspaceCursor(data.activeId);return true;}
+    saveSession(source,data){
+      if(!frameMatches(source)||workspace.mode!=='learner')return true;
+      const course={id:workspace.id,curriculum:workspace.project};
+      const before=CourseLearning.progress(course).completedLessonIds;
+      CourseLearning.save(workspace.id,data,workspace.revisions);
+      window.DailyQuests?.recordLessonCompletion(workspace.id,before,CourseLearning.progress(course).completedLessonIds);
+      syncWorkspaceCursor(data.activeId);return true;
+    }
   };
   function parseRoute() {
     let parts;try{parts=location.hash.slice(1).split('/').filter(Boolean).map(decodeURIComponent);}catch{return {kind:'missing'};}
