@@ -75,6 +75,7 @@ test('image panels show recommended and selected dimensions, report ratio differ
  const form=page.locator('#masteryEditForm');
  await expect(page.locator('#mastery-image-guide')).toContainText('1200 × 600 px');await expect(page.locator('#mastery-image-guide')).toContainText('2:1');
  await expect(page.locator('#mastery-iconUrl-guide')).toContainText('256 × 256 px');
+ await form.locator('[name=image]').fill('assets/mastery/blender.svg');
  await expect(page.locator('[data-media-size=image]')).toContainText('Векторное изображение масштабируется без потери чёткости.');
  await expect(page.locator('[data-media-size=image]')).not.toContainText('Размер меньше рекомендуемого');
  await form.locator('[data-media-upload=image]').setInputFiles(await png(page,1200,600));

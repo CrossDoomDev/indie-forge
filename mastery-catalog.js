@@ -34,7 +34,7 @@ window.MasteryCatalog = (() => {
     const technologies=input.technologies.map((t,i)=>{
       if(!t||typeof t!=='object')throw Error('Некорректная технология.');
       const id=identifier(t.id);if(ids.has(id))throw Error('Повторяется ID технологии: '+id);ids.add(id);
-      return {id,title:required(t.title,'Название технологии'),description:plain(t.description),about:plain(t.about,12000),category:Object.hasOwn(categories,t.category)?t.category:'tools',tags:(Array.isArray(t.tags)?t.tags:[]).slice(0,10).map(v=>plain(v,40)).filter(Boolean),image:safeImage(t.image)||'assets/mastery/tools.svg',icon:icons.includes(t.icon)?t.icon:'tools',iconUrl:safeImage(t.iconUrl),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#40bfff',order:number(t.order,i,100000),published:t.published!==false};
+      return {id,title:required(t.title,'Название технологии'),description:plain(t.description),about:plain(t.about,12000),category:Object.hasOwn(categories,t.category)?t.category:'tools',tags:(Array.isArray(t.tags)?t.tags:[]).slice(0,10).map(v=>plain(v,40)).filter(Boolean),image:safeImage(t.image)||'assets/mastery/technologies/tools.webp',icon:icons.includes(t.icon)?t.icon:'tools',iconUrl:safeImage(t.iconUrl),color:/^#[0-9a-f]{6}$/i.test(t.color)?t.color:'#40bfff',order:number(t.order,i,100000),published:t.published!==false};
     });
     const courseIds=new Set();
     const courses=input.courses.map((c,i)=>{
@@ -49,7 +49,18 @@ window.MasteryCatalog = (() => {
   }
   let catalog=validate(window.MASTERY_SEED);
   let recovery='';
-  try {const stored=localStorage.getItem(KEY);if(stored)catalog=validate(JSON.parse(stored));}catch {recovery='Сохранённый каталог не удалось прочитать. Открыта исходная версия.';}
+  function refreshDefaultArtwork(saved) {
+    // Update only known old built-in covers. Keep uploads, custom links and all authored data.
+    for(const collection of ['technologies','courses']) {
+      const defaults=new Map(window.MASTERY_SEED[collection].map(record=>[record.id,record]));
+      for(const record of saved[collection]) {
+        const original=defaults.get(record.id);
+        if(original&&record.image===`assets/mastery/${collection==='courses'?original.technologyId:original.id}.svg`)record.image=original.image;
+      }
+    }
+    return saved;
+  }
+  try {const stored=localStorage.getItem(KEY);if(stored)catalog=refreshDefaultArtwork(validate(JSON.parse(stored)));}catch {recovery='Сохранённый каталог не удалось прочитать. Открыта исходная версия.';}
   function commit(next) {
     const checked=validate(next);
     try {localStorage.setItem(KEY,JSON.stringify(checked));}catch {throw Error('Браузер не смог сохранить каталог. Освободите место или разрешите локальное хранение.');}

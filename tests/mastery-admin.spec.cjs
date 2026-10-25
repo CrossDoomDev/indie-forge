@@ -1,4 +1,31 @@
 const {test,expect}=require('@playwright/test');
+
+test('new built-in covers replace legacy defaults without resetting authored catalogues or custom images',async({page})=>{
+ await page.goto('/#/mastery');
+ const expected=await page.evaluate(()=>{
+  const data=MasteryCatalog.snapshot();
+  const technology=data.technologies.find(t=>t.id==='godot');
+  const course=data.courses.find(c=>c.id==='godot-core-1');
+  const expected={technology:technology.image,course:course.image};
+  technology.image='assets/mastery/godot.svg';technology.title='Авторское направление';technology.order=99;technology.published=false;
+  course.image='assets/mastery/godot.svg';course.description='Авторское описание';course.curriculum.lessons[0].steps[0].html='<p>Сохранённый урок автора</p>';
+  data.technologies.find(t=>t.id==='blender').image='assets/avatar.webp';
+  data.courses.find(c=>c.id==='godot-applied-1').image='https://example.com/my-cover.webp';
+  data.courses.find(c=>c.id==='godot-applied-2').image='';
+  localStorage.setItem('indieforge.mastery.catalog.v1',JSON.stringify(data));
+  return expected;
+ });
+ expect(expected.technology).toBe('assets/mastery/technologies/godot.webp');
+ expect(expected.course).toBe('assets/mastery/courses/godot-core-1.webp');
+ await page.reload();
+ const data=await page.evaluate(()=>MasteryCatalog.snapshot()),tech=data.technologies.find(t=>t.id==='godot'),course=data.courses.find(c=>c.id==='godot-core-1');
+ expect(tech.image).toBe(expected.technology);expect(course.image).toBe(expected.course);
+ expect(tech.title).toBe('Авторское направление');expect(tech.order).toBe(99);expect(tech.published).toBe(false);
+ expect(course.description).toBe('Авторское описание');expect(course.curriculum.lessons[0].steps[0].html).toBe('<p>Сохранённый урок автора</p>');
+ expect(data.technologies.find(t=>t.id==='blender').image).toBe('assets/avatar.webp');
+ expect(data.courses.find(c=>c.id==='godot-applied-1').image).toBe('https://example.com/my-cover.webp');
+ expect(data.courses.find(c=>c.id==='godot-applied-2').image).toBe('');
+});
 const snapshot=page=>page.evaluate(()=>MasteryCatalog.snapshot());
 const ids=(page,collection)=>page.locator(`[data-reorder-id][data-collection=${collection}]`).evaluateAll(nodes=>nodes.map(node=>node.dataset.reorderId));
 async function start(page,route='/#/mastery') {await page.goto(route);await page.locator('[data-mode=admin]').click();}

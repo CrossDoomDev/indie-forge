@@ -1,0 +1,1772 @@
+{
+  "version": 1,
+  "format": "WebP lossless",
+  "generator": "image_gen",
+  "pixelVerified": true,
+  "images": [
+    {
+      "kind": "technology",
+      "id": "godot",
+      "title": "Godot",
+      "image": "assets/mastery/technologies/godot.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 271254,
+      "sha256": "23d5992abfcb904eca914178887fbab693f1bfe4b9553e44d57236290b4f738e",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 0,
+      "crop": [
+        2,
+        18,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "gamemaker",
+      "title": "GameMaker",
+      "image": "assets/mastery/technologies/gamemaker.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 261218,
+      "sha256": "8125c88d629ee894a3aaaf06712c09efc5bad1fd5e0ba7ae68139923510c3013",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 1,
+      "crop": [
+        559,
+        18,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "rpgmaker",
+      "title": "RPG Maker",
+      "image": "assets/mastery/technologies/rpgmaker.webp",
+      "width": 554,
+      "height": 277,
+      "bytes": 285654,
+      "sha256": "04257d9ea25e368efa9abf0c677540fcf74578685df23bded43a7c1a5fa97e22",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 2,
+      "crop": [
+        1116,
+        18,
+        554,
+        277
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "blender",
+      "title": "Blender",
+      "image": "assets/mastery/technologies/blender.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 228708,
+      "sha256": "ab1b61e48afa57ee3583abdcb7347d0a15c35f9480af96c0d924b12a0b75bcc1",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 3,
+      "crop": [
+        2,
+        332,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "aseprite",
+      "title": "Aseprite",
+      "image": "assets/mastery/technologies/aseprite.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 227350,
+      "sha256": "364bd956ae2a7db65435ed27f2f6dbcbfb20c5056a69111544839b6d55659436",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 4,
+      "crop": [
+        559,
+        332,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "unity",
+      "title": "Unity",
+      "image": "assets/mastery/technologies/unity.webp",
+      "width": 554,
+      "height": 277,
+      "bytes": 273994,
+      "sha256": "1642ef0369b3ffaa7e69b440cf405bd415cc8cf2aa6633b4ad4b622f5bd3bf9e",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 5,
+      "crop": [
+        1116,
+        331,
+        554,
+        277
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "web",
+      "title": "Web / JavaScript",
+      "image": "assets/mastery/technologies/web.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 223304,
+      "sha256": "6e74831e4d2d13e0fe62951215d00a2d3ca38a9718cf8a7beade698bcf2328d0",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 6,
+      "crop": [
+        2,
+        646,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "csharp",
+      "title": "C# / .NET",
+      "image": "assets/mastery/technologies/csharp.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 254684,
+      "sha256": "1df096802bd91e468add969e3195b15855fdaed65c73577f3b2dc033e906d707",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 7,
+      "crop": [
+        559,
+        646,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "pixelart",
+      "title": "Пиксель-арт",
+      "image": "assets/mastery/technologies/pixelart.webp",
+      "width": 554,
+      "height": 277,
+      "bytes": 270134,
+      "sha256": "5cd454be476a45889406cf4cd92e5e74dee8981dba55f1630ff944baa0f91840",
+      "source": "exec-92a11990-0fd7-4f71-aa9c-660e22687902.png",
+      "tile": 8,
+      "crop": [
+        1116,
+        645,
+        554,
+        277
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "audio",
+      "title": "Музыка и звук",
+      "image": "assets/mastery/technologies/audio.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 257574,
+      "sha256": "d15fa70c53abe7b70452a978a646f1b079b00538a0f3fbc77aff41c1a1f65dc2",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 0,
+      "crop": [
+        2,
+        18,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "tools",
+      "title": "Инструменты и пайплайн",
+      "image": "assets/mastery/technologies/tools.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 238130,
+      "sha256": "0887d19ac0eaedb6d32dc604c1d5b9818c67717f5b0695ee21d4b65f8cc15dc4",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 1,
+      "crop": [
+        559,
+        18,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "design",
+      "title": "Дизайн и геймдев",
+      "image": "assets/mastery/technologies/design.webp",
+      "width": 554,
+      "height": 277,
+      "bytes": 271038,
+      "sha256": "e4a2476cbebf33b108b8c13c97944e29a77dcf0af1ff65e50bd5145e13ed9c33",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 2,
+      "crop": [
+        1116,
+        18,
+        554,
+        277
+      ]
+    },
+    {
+      "kind": "technology",
+      "id": "ui",
+      "title": "2D / UI / Графика",
+      "image": "assets/mastery/technologies/ui.webp",
+      "width": 552,
+      "height": 276,
+      "bytes": 261124,
+      "sha256": "38c85bb53de25183cd6c10584567bb3f360522e0f194d55a196ddbf8b758e5f2",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 3,
+      "crop": [
+        2,
+        332,
+        552,
+        276
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-1",
+      "title": "Godot с нуля",
+      "image": "assets/mastery/courses/godot-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 277342,
+      "sha256": "14f25bc1b07c2a5e966c95cf8b7443491e5179af7d7773ee251f9a89de90f7a6",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-2",
+      "title": "GDScript с нуля",
+      "image": "assets/mastery/courses/godot-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 272654,
+      "sha256": "7e0cc6a967acd78116d5ffcffa858a427e34e8b7e35d61c10b39fcbc1d8b36cb",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-3",
+      "title": "2D-разработка",
+      "image": "assets/mastery/courses/godot-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 305916,
+      "sha256": "099b476b592290760a02c5adc2139b86c8bd4c25df707fb2d350fb0a99c4c0ae",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-4",
+      "title": "3D-разработка",
+      "image": "assets/mastery/courses/godot-core-4.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 256604,
+      "sha256": "409fae40121cc18571a780bb2e20c19d38e2090d28b602853f70a8cb77ae7abe",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-5",
+      "title": "UI / мобильная разработка",
+      "image": "assets/mastery/courses/godot-core-5.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 285058,
+      "sha256": "345934a199f5b9301fde8ba4aa599e92fe94a3e953546320da7ec30a7c3ae3b3",
+      "source": "exec-8be5b1a9-e76b-43dc-8e5b-ab7919fbbd30.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-6",
+      "title": "ООП и архитектура",
+      "image": "assets/mastery/courses/godot-core-6.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 267784,
+      "sha256": "c1471f6ad622216592bd4d8d69e1b2cd0231257e024275598c1a4bf2af430213",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-7",
+      "title": "Игровые системы и ИИ",
+      "image": "assets/mastery/courses/godot-core-7.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 288028,
+      "sha256": "3f33d843e5430f5068fb2a78a88071d613652dacc79588e3f15a39cadc835831",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-8",
+      "title": "Шейдеры / VFX / звук",
+      "image": "assets/mastery/courses/godot-core-8.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 327212,
+      "sha256": "402b3efaa45886710e19fd37899b9d675766ac50f313053414d0c8ac2ec63944",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-9",
+      "title": "Мультиплеер",
+      "image": "assets/mastery/courses/godot-core-9.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 290966,
+      "sha256": "c5321c6b7f03ee72a95e7daf1db83d588d4387daa0a7eb8200d92ad80a46f0c5",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-10",
+      "title": "Тестирование / оптимизация",
+      "image": "assets/mastery/courses/godot-core-10.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 263346,
+      "sha256": "44629f4b0a74824159caa061c3a7561450c63dbe2db96bef73e0d515110de28a",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-11",
+      "title": "Инструменты / плагины",
+      "image": "assets/mastery/courses/godot-core-11.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 257938,
+      "sha256": "28d8ce1c936ce832c2d4d8bfca341440bbf64c714ebdd82be9af78922ce3636f",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-12",
+      "title": "Публикация / монетизация",
+      "image": "assets/mastery/courses/godot-core-12.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 251790,
+      "sha256": "e2ac2289d165e9fa150df8f8c90dd13d5360b76de0ad48b0137d62c18eb34aba",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-core-13",
+      "title": "Дипломный проект",
+      "image": "assets/mastery/courses/godot-core-13.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 328232,
+      "sha256": "90f1d5eb4d49878a8d17916009f90017efe7e40d2939b86f32040b4412943fe2",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-1",
+      "title": "Платформер на Godot",
+      "image": "assets/mastery/courses/godot-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 324092,
+      "sha256": "54a2df47eb6c218ba32b5fc1ab6139921cbbfbca3fe68dda83fe9403144da6cf",
+      "source": "exec-7a6aedb5-b70e-46f9-b9e3-e4b0709cc3c1.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-2",
+      "title": "Инвентарь",
+      "image": "assets/mastery/courses/godot-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 299240,
+      "sha256": "f37d9c658d250c0ce08c46c1d764afc51ea96ebda8b218cc44a1d48cd0195b92",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-3",
+      "title": "Диалоги и квесты",
+      "image": "assets/mastery/courses/godot-applied-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 278348,
+      "sha256": "040a7892afbe8c1aac5cc838eea9c879bc0808e0761aadf4774d9ad7d70712c9",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-4",
+      "title": "Топ-даун RPG",
+      "image": "assets/mastery/courses/godot-applied-4.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 333402,
+      "sha256": "7cc5ae7b4406e745bd594009ae20746d048142d210b35375eac5af1f75d47197",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-5",
+      "title": "Сохранения",
+      "image": "assets/mastery/courses/godot-applied-5.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 266882,
+      "sha256": "971000e7b7cca3d503c481da227bca4e9f80edcd167d9160679c430439e07ce4",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-6",
+      "title": "Меню и настройки",
+      "image": "assets/mastery/courses/godot-applied-6.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 281268,
+      "sha256": "3bbfddfa426b5c74898a0df14f3a89f810c175704a7a01c7be68ac2138792963",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-7",
+      "title": "HUD и интерфейс",
+      "image": "assets/mastery/courses/godot-applied-7.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 320332,
+      "sha256": "c66732e01cf757f4e437d875bccb0e0118e13d6bdea80e068bbce8407259cfde",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-8",
+      "title": "2D бой и враги",
+      "image": "assets/mastery/courses/godot-applied-8.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 299076,
+      "sha256": "f8f097481c1f47f14b29411c735d5d92634c1e68e51571b728d9b8064eaea480",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-9",
+      "title": "Мобильный UI",
+      "image": "assets/mastery/courses/godot-applied-9.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 243052,
+      "sha256": "6078c1b9ef1b723334462a775c9778adef1b9171be14df21c5018b4eb52f954a",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-10",
+      "title": "Экспорт на Android",
+      "image": "assets/mastery/courses/godot-applied-10.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 220918,
+      "sha256": "c6efb432345723edbdbe01b9f501447e4f4cc80c71987da95adff362838e69a6",
+      "source": "exec-053eb76a-32e3-467d-a851-b2f47dcbdc5c.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-11",
+      "title": "Продвинутый ИИ",
+      "image": "assets/mastery/courses/godot-applied-11.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 312252,
+      "sha256": "bf2d2c4ac6ff76fc237dd658a6b14b8be68ec1fc0792d68bb5a8b43ba6c89f3e",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "godot-applied-12",
+      "title": "Процедурные уровни",
+      "image": "assets/mastery/courses/godot-applied-12.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 283186,
+      "sha256": "a1df0902f466b3c3079330408a7cab0b705d4c5d6e7d63d75afe30a2afe0b7cc",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "gamemaker-core-1",
+      "title": "Интерфейс и первые объекты",
+      "image": "assets/mastery/courses/gamemaker-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 264704,
+      "sha256": "a878b534cafd999b3046e2dd677f516dd9dbf1f4b20b82dfe3393827522d1f07",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "gamemaker-core-2",
+      "title": "GML: основы языка",
+      "image": "assets/mastery/courses/gamemaker-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 246094,
+      "sha256": "a594df1a6e1bb62a481f33ba8715fb4ee384d293b2e197e09ca0a528f3ecca61",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "gamemaker-core-3",
+      "title": "Системы 2D-игры",
+      "image": "assets/mastery/courses/gamemaker-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 296924,
+      "sha256": "64c98ce7711f5a0f9ad91214315094b141454050ba1d188fe81e9e8d3288c034",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "gamemaker-applied-1",
+      "title": "Аркада с нуля",
+      "image": "assets/mastery/courses/gamemaker-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 285546,
+      "sha256": "ff4cb54ef7258cd84c0deb5878f3a59a81770a248c31b92cb4f3c893c4684872",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "gamemaker-applied-2",
+      "title": "Платформер на GML",
+      "image": "assets/mastery/courses/gamemaker-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 325552,
+      "sha256": "4fb9127f121c2f9ab6462cf79dd5a34d63eb85010c769771c660ed58c799c914",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "rpgmaker-core-1",
+      "title": "Первые шаги в RPG Maker",
+      "image": "assets/mastery/courses/rpgmaker-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 286956,
+      "sha256": "bd08b70ac28e9beedca88303db1158fd73eb712ecdb4a7253819d6c6dd770dc6",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "rpgmaker-core-2",
+      "title": "События и переменные",
+      "image": "assets/mastery/courses/rpgmaker-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 282980,
+      "sha256": "9a2696a05a9cc83160abc92f66be2b6b4324690bea8082949839ac731b8e20b1",
+      "source": "exec-33c3f8e3-1df5-4b60-bb1d-6389dd996a86.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "rpgmaker-core-3",
+      "title": "Мир и история",
+      "image": "assets/mastery/courses/rpgmaker-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 334254,
+      "sha256": "f52bd8aa023c8bc1a57a16466164a0c2a927547472d2d1682764fa5a95d668cd",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "rpgmaker-applied-1",
+      "title": "Первая история",
+      "image": "assets/mastery/courses/rpgmaker-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 290884,
+      "sha256": "8b4dc0974efc0df350c8003fb76aa9daeb2b6da7cc42ec4e6eb2bca2a6ecee65",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "rpgmaker-applied-2",
+      "title": "Квестовая система",
+      "image": "assets/mastery/courses/rpgmaker-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 297512,
+      "sha256": "3de4ce365cda44126882a72815dfd7612faa6638584d81ff1e6ece431597dd63",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "blender-core-1",
+      "title": "Blender с нуля",
+      "image": "assets/mastery/courses/blender-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 237510,
+      "sha256": "90f9eb89d1973dec82b66f13b2a9a9dcdb4aacb0c33b11d46ec8daf3e343c39b",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "blender-core-2",
+      "title": "Моделирование для игр",
+      "image": "assets/mastery/courses/blender-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 250294,
+      "sha256": "eda08ea4ee6e4eacea772e91cc2196d369e7c1f28dbe5eccd24ce2c76e16ed14",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "blender-core-3",
+      "title": "Материалы и анимация",
+      "image": "assets/mastery/courses/blender-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 231720,
+      "sha256": "42e95add51af7dbf8b32b308ba131c9255023aefd226bef22094a7eac22f048c",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "blender-applied-1",
+      "title": "Low-poly окружение",
+      "image": "assets/mastery/courses/blender-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 277388,
+      "sha256": "72249b3eba2c9f99ac62b44eafc3ea638e344e86307348ace5887869bba59b54",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "blender-applied-2",
+      "title": "Персонаж для игры",
+      "image": "assets/mastery/courses/blender-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 240076,
+      "sha256": "ff450ac8e753675f2f7b35320d1aa48940232379f550b8927afda4b6e0180b4b",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "aseprite-core-1",
+      "title": "Aseprite с нуля",
+      "image": "assets/mastery/courses/aseprite-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 281796,
+      "sha256": "b8f4c5534031f389cb8a02230ef376d34cfd3dce5b898e588990f087e793956d",
+      "source": "exec-1bc3bd9a-2a28-4f08-8982-1ec029c95b52.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "aseprite-core-2",
+      "title": "Спрайты и тайлсеты",
+      "image": "assets/mastery/courses/aseprite-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 280246,
+      "sha256": "f5cf08357d746444040e7977886a90dc4bd5981f16c5a206464960e6a8d931ee",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "aseprite-core-3",
+      "title": "Покадровая анимация",
+      "image": "assets/mastery/courses/aseprite-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 262396,
+      "sha256": "045f6ab3d7cd0b3e1de66cd702ce730dc13e9c196f0a772a71a39274abcdca72",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "aseprite-applied-1",
+      "title": "Анимированный персонаж",
+      "image": "assets/mastery/courses/aseprite-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 267524,
+      "sha256": "fa328bda8c15eefa1d6a06466fc9fb5d82b0ab444b2b6037cb1d6b5fea1fc550",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "aseprite-applied-2",
+      "title": "Тайлсет для платформера",
+      "image": "assets/mastery/courses/aseprite-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 323912,
+      "sha256": "eff9abeccd316a5a09a4a953365d562388ae28a9a4f37cd4186a72f44e4b36c5",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "unity-core-1",
+      "title": "Unity с нуля",
+      "image": "assets/mastery/courses/unity-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 275836,
+      "sha256": "dc53d212ae078d2e403af86b20b08c8c209701c6f837d5268a9da50a45acc257",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "unity-core-2",
+      "title": "C# в Unity",
+      "image": "assets/mastery/courses/unity-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 266778,
+      "sha256": "e58d2d2c6d0fa70be5216016be3eb6c048e89bad3793473aaab6d9651feeeb69",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "unity-core-3",
+      "title": "2D и 3D механики",
+      "image": "assets/mastery/courses/unity-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 232180,
+      "sha256": "e75011775eb827eeb9fbb1f0cd69e3ba85aa619c2944413b529021306310d558",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "unity-applied-1",
+      "title": "Аркада на Unity",
+      "image": "assets/mastery/courses/unity-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 278532,
+      "sha256": "1aa6e62dcd26cde147553ff8e9b8ed94043a98cbc901a551e35f0ffec1a3ab35",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "unity-applied-2",
+      "title": "Контроллер персонажа",
+      "image": "assets/mastery/courses/unity-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 305654,
+      "sha256": "7a17255197d8693b9a1cf9070f52a0d2188990eb863f498fa148c6b82a231f7d",
+      "source": "exec-922932a4-6175-4598-812c-cd8fabe2b995.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "web-core-1",
+      "title": "HTML и CSS",
+      "image": "assets/mastery/courses/web-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 285070,
+      "sha256": "199f1adf34ac00da4f7a7637777f3ae9ab7c925ea348d44fb9125a909fff0346",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "web-core-2",
+      "title": "JavaScript с нуля",
+      "image": "assets/mastery/courses/web-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 266912,
+      "sha256": "0c6f71b8166e7e8bcfc7f5b0c8453515789133ae8c4d2fde742ab2eff7b9bc13",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "web-core-3",
+      "title": "Игры в браузере",
+      "image": "assets/mastery/courses/web-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 275752,
+      "sha256": "6a2ee67dd742a625ea1639ec9fbc3ab2739841b9b4556fa35636d0909a1db55a",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "web-applied-1",
+      "title": "Игра на Canvas",
+      "image": "assets/mastery/courses/web-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 270014,
+      "sha256": "decae72d77b6593279277862478dbcea364da23ed9adaf629fd36ff734f87ad3",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "web-applied-2",
+      "title": "Личный сайт разработчика",
+      "image": "assets/mastery/courses/web-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 297440,
+      "sha256": "faeb83b23d309a3095c9f43361f21f1928bb88d9dd1ba51255d311fd9a239fbc",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "csharp-core-1",
+      "title": "C# с нуля",
+      "image": "assets/mastery/courses/csharp-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 277284,
+      "sha256": "178875defb68e15a3e617926b7797fda49c0057bd2a194ee1500cf17cb4281c0",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "csharp-core-2",
+      "title": "Объектная модель",
+      "image": "assets/mastery/courses/csharp-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 258426,
+      "sha256": "e62307860520d1ba92fa8605e5203ce7403f2c029f87382d16595d113ea248b3",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "csharp-core-3",
+      "title": ".NET на практике",
+      "image": "assets/mastery/courses/csharp-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 283616,
+      "sha256": "73aa230db10dd0c2f7b7747a3015bc439b027cefa3fc4ad47ee87e16a3086271",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "csharp-applied-1",
+      "title": "Редактор игровых данных",
+      "image": "assets/mastery/courses/csharp-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 280286,
+      "sha256": "3d8afd3f92c4bd017938221c2b45a7354d5c577e9514daf8ad5de8060e27a7a9",
+      "source": "exec-a4913a19-27ff-456d-9005-190054ba474d.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "csharp-applied-2",
+      "title": "Система инвентаря на C#",
+      "image": "assets/mastery/courses/csharp-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 274674,
+      "sha256": "76dcf0663fdaa457b761dad154e5b30edce2a4af19ccf346cc4e7d6cadf40b28",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "pixelart-core-1",
+      "title": "Основы пиксель-арта",
+      "image": "assets/mastery/courses/pixelart-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 263514,
+      "sha256": "9c20bd5b5b79fa1a1b97f34a26c16819f59cc8649efae64a041d6cb2f8f820b6",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "pixelart-core-2",
+      "title": "Цвет и освещение",
+      "image": "assets/mastery/courses/pixelart-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 291976,
+      "sha256": "93ca02577a9d44a617796f07d9316fc69ccd26e9ae4a64d6109dc476e2804b75",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "pixelart-core-3",
+      "title": "Анимация в пикселях",
+      "image": "assets/mastery/courses/pixelart-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 290764,
+      "sha256": "6699ae4b795d7aeac89e0c403f3150553ffdb918c5d2a4667d7ef36b62467121",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "pixelart-applied-1",
+      "title": "Пиксельный мир",
+      "image": "assets/mastery/courses/pixelart-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 322550,
+      "sha256": "7c72d22ac8529a9f84f00d0687145c3082c373c90b19f7ddded3aea63657c439",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "pixelart-applied-2",
+      "title": "Эффекты попаданий",
+      "image": "assets/mastery/courses/pixelart-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 291526,
+      "sha256": "a6720de18dc30a5ff4bf6d70c93cd29df368b09274f2292dae5a8f986dc4e029",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "audio-core-1",
+      "title": "Звук в игре",
+      "image": "assets/mastery/courses/audio-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 248502,
+      "sha256": "67b6fe670fc8f9c89d26fa3d6f6649973cdd7f9e0ac8b8da2d26183357386899",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "audio-core-2",
+      "title": "Основы игровой музыки",
+      "image": "assets/mastery/courses/audio-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 277326,
+      "sha256": "52869888c9da9c4618942cde52e05b9571c0f3ea5fc9b7f3e4593682affc7de4",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "audio-core-3",
+      "title": "Интерактивное аудио",
+      "image": "assets/mastery/courses/audio-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 317122,
+      "sha256": "73d743f63264765c0cacd677947229e59427d74e5703fde92aa5af97fec97e69",
+      "source": "exec-838ea866-ae79-4264-a878-028617d8cf99.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "audio-applied-1",
+      "title": "Звуковой набор для игры",
+      "image": "assets/mastery/courses/audio-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 280054,
+      "sha256": "c4c8e09fadceefe43f9dc7d2c9272aa08d9f4cd5326eb4e5815e35b84e21ada8",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "audio-applied-2",
+      "title": "Музыкальная петля",
+      "image": "assets/mastery/courses/audio-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 290876,
+      "sha256": "e1bebbd25a42a2a9820309e99b653328745a9e02a841fa1f32bad480747a7a5c",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "tools-core-1",
+      "title": "Git для разработчика",
+      "image": "assets/mastery/courses/tools-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 304028,
+      "sha256": "cf175d6b8f09cc6d678785abf95e4a6086217ae4633ad52bf0e3e881f34f4e1c",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "tools-core-2",
+      "title": "Рабочий процесс",
+      "image": "assets/mastery/courses/tools-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 267230,
+      "sha256": "e250266360a165f6ce41dbe1ada7e4c866f747319a5f646712c44981eed6f760",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "tools-core-3",
+      "title": "Сборка и автоматизация",
+      "image": "assets/mastery/courses/tools-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 293666,
+      "sha256": "38b90733853ff5d9fed6e7fa8911d1f8ea9c5b1cf84c74fae7970c9fb32a7061",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "tools-applied-1",
+      "title": "Пайплайн инди-команды",
+      "image": "assets/mastery/courses/tools-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 275914,
+      "sha256": "f664e780313cac3bfb980fcc36baab91abd30ae00db5261f65a4ccd1acb25288",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "tools-applied-2",
+      "title": "Автоматическая сборка",
+      "image": "assets/mastery/courses/tools-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 291002,
+      "sha256": "7d5b4e7bc59b1f4a4393656bdc26329ff7e45377b5e67317f8f89117c432affe",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "design-core-1",
+      "title": "Основы геймдизайна",
+      "image": "assets/mastery/courses/design-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 325382,
+      "sha256": "5c0c03efe44fbbf8ab2068d910e6d3528af6aeb37573ad47edebbeee6226210a",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "design-core-2",
+      "title": "Баланс и прогрессия",
+      "image": "assets/mastery/courses/design-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 304190,
+      "sha256": "c648a5e276b37d63c082d21a3f2f5693178c407e44f300b3fea5934151835a77",
+      "source": "exec-3eaf1fc3-8c3e-4158-9f07-3ad46b0e4b0f.png",
+      "tile": 8,
+      "crop": [
+        1121,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "design-core-3",
+      "title": "Дизайн уровней",
+      "image": "assets/mastery/courses/design-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 286204,
+      "sha256": "607811cc8ebab51f8c651d53762619f9258b253668cc086c8ba8a8c380743f21",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 0,
+      "crop": [
+        6,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "design-applied-1",
+      "title": "Прототип механики",
+      "image": "assets/mastery/courses/design-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 292120,
+      "sha256": "f08ae5ac3e12cf517fdd19f711df061d03e09a86a6b169b94ff3667fdf9b26d1",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 1,
+      "crop": [
+        563,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "design-applied-2",
+      "title": "Дизайн игрового уровня",
+      "image": "assets/mastery/courses/design-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 312858,
+      "sha256": "3fad99a79958af5409bf069775b3807c639fae324437952128e37b0ae11f5eea",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 2,
+      "crop": [
+        1121,
+        3,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "ui-core-1",
+      "title": "Основы игрового UI",
+      "image": "assets/mastery/courses/ui-core-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 244334,
+      "sha256": "f2908743f03e44312ffdbb12aa4802f4ea58117049127059c28e726cb0890312",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 3,
+      "crop": [
+        6,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "ui-core-2",
+      "title": "Компоненты интерфейса",
+      "image": "assets/mastery/courses/ui-core-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 237290,
+      "sha256": "41e8556b728b51de4cbd6b15f7cec97a5f8e9359fd93c8ccb795172e143a22f7",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 4,
+      "crop": [
+        563,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "ui-core-3",
+      "title": "Адаптивный интерфейс",
+      "image": "assets/mastery/courses/ui-core-3.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 290028,
+      "sha256": "d5e1cc180d2ea0423db148d6cd4510ce42f2be3c0cc134531dae278aa51497e9",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 5,
+      "crop": [
+        1121,
+        317,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "ui-applied-1",
+      "title": "Интерфейс инвентаря",
+      "image": "assets/mastery/courses/ui-applied-1.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 259164,
+      "sha256": "b43604d2519fd2139d8a13141151e210f6c425779ac068f0cc5f9ce52f38c5b3",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 6,
+      "crop": [
+        6,
+        631,
+        544,
+        306
+      ]
+    },
+    {
+      "kind": "course",
+      "id": "ui-applied-2",
+      "title": "Главное меню игры",
+      "image": "assets/mastery/courses/ui-applied-2.webp",
+      "width": 544,
+      "height": 306,
+      "bytes": 302842,
+      "sha256": "e8490b68a5253e2563412786afc0e8697133e9f488345782a7a7c71b5040f123",
+      "source": "exec-68b2c85c-1b86-417e-918c-1176482841d2.png",
+      "tile": 7,
+      "crop": [
+        563,
+        631,
+        544,
+        306
+      ]
+    }
+  ]
+}

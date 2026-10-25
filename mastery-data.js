@@ -14,7 +14,7 @@ window.MASTERY_SEED = {
         "Open Source"
       ],
       "color": "#36b8ff",
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/technologies/godot.webp",
       "icon": "godot",
       "order": 0,
       "published": true,
@@ -31,7 +31,7 @@ window.MASTERY_SEED = {
         "Визуальные скрипты"
       ],
       "color": "#36d995",
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/technologies/gamemaker.webp",
       "icon": "gamemaker",
       "order": 1,
       "published": true,
@@ -49,7 +49,7 @@ window.MASTERY_SEED = {
         "Без кода"
       ],
       "color": "#b2c8f7",
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/technologies/rpgmaker.webp",
       "icon": "rpgmaker",
       "order": 2,
       "published": true,
@@ -66,7 +66,7 @@ window.MASTERY_SEED = {
         "Анимация"
       ],
       "color": "#ff913f",
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/technologies/blender.webp",
       "icon": "blender",
       "order": 3,
       "published": true,
@@ -83,7 +83,7 @@ window.MASTERY_SEED = {
         "Анимация"
       ],
       "color": "#c397f4",
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/technologies/aseprite.webp",
       "icon": "aseprite",
       "order": 4,
       "published": true,
@@ -101,7 +101,7 @@ window.MASTERY_SEED = {
         "Мультиплатформа"
       ],
       "color": "#e4ebef",
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/technologies/unity.webp",
       "icon": "unity",
       "order": 5,
       "published": true,
@@ -119,7 +119,7 @@ window.MASTERY_SEED = {
         "WebGL"
       ],
       "color": "#ffdc4e",
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/technologies/web.webp",
       "icon": "web",
       "order": 6,
       "published": true,
@@ -137,7 +137,7 @@ window.MASTERY_SEED = {
         "Инструменты"
       ],
       "color": "#b485ff",
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/technologies/csharp.webp",
       "icon": "csharp",
       "order": 7,
       "published": true,
@@ -154,7 +154,7 @@ window.MASTERY_SEED = {
         "Палитры"
       ],
       "color": "#ff6c98",
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/technologies/pixelart.webp",
       "icon": "pixelart",
       "order": 8,
       "published": true,
@@ -171,7 +171,7 @@ window.MASTERY_SEED = {
         "Звук"
       ],
       "color": "#b58bff",
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/technologies/audio.webp",
       "icon": "audio",
       "order": 9,
       "published": true,
@@ -188,7 +188,7 @@ window.MASTERY_SEED = {
         "Команда"
       ],
       "color": "#5bd5d0",
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/technologies/tools.webp",
       "icon": "tools",
       "order": 10,
       "published": true,
@@ -205,7 +205,7 @@ window.MASTERY_SEED = {
         "Уровни"
       ],
       "color": "#edbb68",
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/technologies/design.webp",
       "icon": "design",
       "order": 11,
       "published": true,
@@ -222,7 +222,7 @@ window.MASTERY_SEED = {
         "Графика"
       ],
       "color": "#64c4ff",
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/technologies/ui.webp",
       "icon": "ui",
       "order": 12,
       "published": true,
@@ -242,7 +242,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-1.webp",
       "url": "",
       "outcomes": [
         "Ориентироваться в интерфейсе Godot 4",
@@ -351,7 +351,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-2.webp",
       "url": "",
       "outcomes": [
         "Переменные, функции, условия, циклы и сигналы в игровом коде."
@@ -369,7 +369,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-3.webp",
       "url": "",
       "outcomes": [
         "Спрайты, анимации, физика и тайлы для создания 2D-мира."
@@ -387,7 +387,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 4,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-4.webp",
       "url": "",
       "outcomes": [
         "3D-сцены, модели, материалы, освещение и камера."
@@ -405,7 +405,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 5,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-5.webp",
       "url": "",
       "outcomes": [
         "Пользовательские интерфейсы и адаптация под мобильные платформы."
@@ -423,7 +423,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 6,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-6.webp",
       "url": "",
       "outcomes": [
         "Классы, паттерны, структура проекта и масштабирование кода."
@@ -441,7 +441,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 7,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-7.webp",
       "url": "",
       "outcomes": [
         "Поведение врагов, диалоги, квесты и взаимодействия."
@@ -459,7 +459,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 8,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-8.webp",
       "url": "",
       "outcomes": [
         "Визуальные эффекты, шейдеры, частицы и игровое аудио."
@@ -477,7 +477,7 @@ window.MASTERY_SEED = {
       "level": "advanced",
       "order": 9,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-9.webp",
       "url": "",
       "outcomes": [
         "Сетевые игры, синхронизация, лобби и оптимизация сети."
@@ -495,7 +495,7 @@ window.MASTERY_SEED = {
       "level": "advanced",
       "order": 10,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-10.webp",
       "url": "",
       "outcomes": [
         "Отладка, профилирование и измерение производительности."
@@ -513,7 +513,7 @@ window.MASTERY_SEED = {
       "level": "advanced",
       "order": 11,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-11.webp",
       "url": "",
       "outcomes": [
         "Расширения редактора и собственные инструменты разработки."
@@ -531,7 +531,7 @@ window.MASTERY_SEED = {
       "level": "advanced",
       "order": 12,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-12.webp",
       "url": "",
       "outcomes": [
         "Сборка, экспорт и подготовка страницы игры к релизу."
@@ -550,7 +550,7 @@ window.MASTERY_SEED = {
       "level": "advanced",
       "order": 13,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-core-13.webp",
       "url": "",
       "outcomes": [
         "Соберите собственную игру, применив знания всего пути обучения."
@@ -568,7 +568,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-1.webp",
       "url": "",
       "outcomes": [
         "Соберите 2D-платформер: прыжки, враги, уровни и сбор предметов."
@@ -586,7 +586,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-2.webp",
       "url": "",
       "outcomes": [
         "Система предметов, слотов, экипировки и использования предметов."
@@ -604,7 +604,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-3.webp",
       "url": "",
       "outcomes": [
         "Ветвящиеся разговоры и система квестов с условиями и наградами."
@@ -622,7 +622,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 4,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-4.webp",
       "url": "",
       "outcomes": [
         "Перемещение, взаимодействия, NPC и простая боевая система."
@@ -640,7 +640,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 5,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-5.webp",
       "url": "",
       "outcomes": [
         "Сохранение и загрузка прогресса, настроек и игровых данных."
@@ -658,7 +658,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 6,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-6.webp",
       "url": "",
       "outcomes": [
         "Главное меню, настройки графики, звука и управления."
@@ -676,7 +676,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 7,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-7.webp",
       "url": "",
       "outcomes": [
         "Полосы здоровья, инвентарь, мини-карта и счётчики ресурсов."
@@ -694,7 +694,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 8,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-8.webp",
       "url": "",
       "outcomes": [
         "Ближний бой, урон, анимации и эффекты попаданий."
@@ -712,7 +712,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 9,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-9.webp",
       "url": "",
       "outcomes": [
         "Виртуальный джойстик, жесты и адаптация интерфейса."
@@ -730,7 +730,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 10,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-10.webp",
       "url": "",
       "outcomes": [
         "Настройка экспорта, разрешения, иконки и тестирование."
@@ -748,7 +748,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 11,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-11.webp",
       "url": "",
       "outcomes": [
         "Патрулирование, зоны внимания и поиск игрока."
@@ -766,7 +766,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 12,
       "published": true,
-      "image": "assets/mastery/godot.svg",
+      "image": "assets/mastery/courses/godot-applied-12.webp",
       "url": "",
       "outcomes": [
         "Комнаты, коридоры и размещение врагов и предметов."
@@ -784,7 +784,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/courses/gamemaker-core-1.webp",
       "url": "",
       "outcomes": [
         "События, комнаты и спрайты"
@@ -802,7 +802,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/courses/gamemaker-core-2.webp",
       "url": "",
       "outcomes": [
         "Переменные, функции и события"
@@ -820,7 +820,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/courses/gamemaker-core-3.webp",
       "url": "",
       "outcomes": [
         "Коллизии, камера и управление"
@@ -838,7 +838,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/courses/gamemaker-applied-1.webp",
       "url": "",
       "outcomes": [
         "Игрок, противники и подсчёт очков"
@@ -856,7 +856,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/gamemaker.svg",
+      "image": "assets/mastery/courses/gamemaker-applied-2.webp",
       "url": "",
       "outcomes": [
         "Движение, прыжки и уровни"
@@ -874,7 +874,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/courses/rpgmaker-core-1.webp",
       "url": "",
       "outcomes": [
         "Редактор, карты и персонажи"
@@ -892,7 +892,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/courses/rpgmaker-core-2.webp",
       "url": "",
       "outcomes": [
         "Условия, переключатели и логика событий"
@@ -910,7 +910,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/courses/rpgmaker-core-3.webp",
       "url": "",
       "outcomes": [
         "Диалоги, прогрессия и структура мира"
@@ -928,7 +928,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/courses/rpgmaker-applied-1.webp",
       "url": "",
       "outcomes": [
         "Небольшое приключение с началом и финалом"
@@ -946,7 +946,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/rpgmaker.svg",
+      "image": "assets/mastery/courses/rpgmaker-applied-2.webp",
       "url": "",
       "outcomes": [
         "Задания, награды и состояние мира"
@@ -964,7 +964,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/courses/blender-core-1.webp",
       "url": "",
       "outcomes": [
         "Интерфейс, навигация и работа с объектами"
@@ -982,7 +982,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/courses/blender-core-2.webp",
       "url": "",
       "outcomes": [
         "Геометрия, модификаторы и UV-развёртка"
@@ -1000,7 +1000,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/courses/blender-core-3.webp",
       "url": "",
       "outcomes": [
         "Текстуры, свет и ключевые кадры"
@@ -1018,7 +1018,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/courses/blender-applied-1.webp",
       "url": "",
       "outcomes": [
         "Создайте игровой остров и экспортируйте ассеты"
@@ -1036,7 +1036,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/blender.svg",
+      "image": "assets/mastery/courses/blender-applied-2.webp",
       "url": "",
       "outcomes": [
         "Модель, риг и базовая анимация"
@@ -1054,7 +1054,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/courses/aseprite-core-1.webp",
       "url": "",
       "outcomes": [
         "Инструменты, слои, палитра и экспорт"
@@ -1072,7 +1072,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/courses/aseprite-core-2.webp",
       "url": "",
       "outcomes": [
         "Сетка, читаемость, бесшовность и игровые ассеты"
@@ -1090,7 +1090,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/courses/aseprite-core-3.webp",
       "url": "",
       "outcomes": [
         "Тайминг, ключевые позы и циклы движения"
@@ -1108,7 +1108,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/courses/aseprite-applied-1.webp",
       "url": "",
       "outcomes": [
         "Нарисуйте героя и набор игровых анимаций"
@@ -1126,7 +1126,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/aseprite.svg",
+      "image": "assets/mastery/courses/aseprite-applied-2.webp",
       "url": "",
       "outcomes": [
         "Платформы, переходы и детали окружения"
@@ -1144,7 +1144,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/courses/unity-core-1.webp",
       "url": "",
       "outcomes": [
         "Редактор, сцены, объекты и компоненты"
@@ -1162,7 +1162,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/courses/unity-core-2.webp",
       "url": "",
       "outcomes": [
         "Скрипты, события и работа с компонентами"
@@ -1180,7 +1180,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/courses/unity-core-3.webp",
       "url": "",
       "outcomes": [
         "Физика, анимация, камера и интерфейс"
@@ -1198,7 +1198,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/courses/unity-applied-1.webp",
       "url": "",
       "outcomes": [
         "Создайте и соберите небольшую игру"
@@ -1216,7 +1216,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/unity.svg",
+      "image": "assets/mastery/courses/unity-applied-2.webp",
       "url": "",
       "outcomes": [
         "Управление, камера и анимации"
@@ -1234,7 +1234,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/courses/web-core-1.webp",
       "url": "",
       "outcomes": [
         "Структура страниц, стили и адаптивная вёрстка"
@@ -1252,7 +1252,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/courses/web-core-2.webp",
       "url": "",
       "outcomes": [
         "Данные, функции, события и DOM"
@@ -1270,7 +1270,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/courses/web-core-3.webp",
       "url": "",
       "outcomes": [
         "Canvas, игровой цикл и взаимодействия"
@@ -1288,7 +1288,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/courses/web-applied-1.webp",
       "url": "",
       "outcomes": [
         "Реализуйте механику, счёт и перезапуск"
@@ -1306,7 +1306,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/web.svg",
+      "image": "assets/mastery/courses/web-applied-2.webp",
       "url": "",
       "outcomes": [
         "Адаптивное портфолио собственных проектов"
@@ -1324,7 +1324,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/courses/csharp-core-1.webp",
       "url": "",
       "outcomes": [
         "Типы данных, условия, циклы и методы"
@@ -1342,7 +1342,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/courses/csharp-core-2.webp",
       "url": "",
       "outcomes": [
         "Классы, интерфейсы и композиция"
@@ -1360,7 +1360,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/courses/csharp-core-3.webp",
       "url": "",
       "outcomes": [
         "Коллекции, файлы и асинхронные операции"
@@ -1378,7 +1378,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/courses/csharp-applied-1.webp",
       "url": "",
       "outcomes": [
         "Инструмент для подготовки контента"
@@ -1396,7 +1396,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/csharp.svg",
+      "image": "assets/mastery/courses/csharp-applied-2.webp",
       "url": "",
       "outcomes": [
         "Модель предметов и независимая игровая логика"
@@ -1414,7 +1414,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/courses/pixelart-core-1.webp",
       "url": "",
       "outcomes": [
         "Силуэт, форма, сетка и читаемость"
@@ -1432,7 +1432,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/courses/pixelart-core-2.webp",
       "url": "",
       "outcomes": [
         "Палитры, тени, материалы и глубина"
@@ -1450,7 +1450,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/courses/pixelart-core-3.webp",
       "url": "",
       "outcomes": [
         "Позы, движение и эффекты"
@@ -1468,7 +1468,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/courses/pixelart-applied-1.webp",
       "url": "",
       "outcomes": [
         "Набор согласованных ассетов для уровня"
@@ -1486,7 +1486,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/pixelart.svg",
+      "image": "assets/mastery/courses/pixelart-applied-2.webp",
       "url": "",
       "outcomes": [
         "Короткие анимации искр, дыма и взрывов"
@@ -1504,7 +1504,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/courses/audio-core-1.webp",
       "url": "",
       "outcomes": [
         "Частоты, громкость, форматы и экспорт"
@@ -1522,7 +1522,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/courses/audio-core-2.webp",
       "url": "",
       "outcomes": [
         "Ритм, гармония и зацикливание"
@@ -1540,7 +1540,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/courses/audio-core-3.webp",
       "url": "",
       "outcomes": [
         "Слои, переходы и адаптивный звук"
@@ -1558,7 +1558,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/courses/audio-applied-1.webp",
       "url": "",
       "outcomes": [
         "Шаги, действия, интерфейс и окружение"
@@ -1576,7 +1576,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/audio.svg",
+      "image": "assets/mastery/courses/audio-applied-2.webp",
       "url": "",
       "outcomes": [
         "Напишите атмосферный игровой трек"
@@ -1594,7 +1594,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/courses/tools-core-1.webp",
       "url": "",
       "outcomes": [
         "Коммиты, ветки и история проекта"
@@ -1612,7 +1612,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/courses/tools-core-2.webp",
       "url": "",
       "outcomes": [
         "Планирование, задачи и организация ассетов"
@@ -1630,7 +1630,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/courses/tools-core-3.webp",
       "url": "",
       "outcomes": [
         "Повторяемая подготовка проекта к релизу"
@@ -1648,7 +1648,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/courses/tools-applied-1.webp",
       "url": "",
       "outcomes": [
         "Согласуйте код, графику и задачи"
@@ -1666,7 +1666,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/tools.svg",
+      "image": "assets/mastery/courses/tools-applied-2.webp",
       "url": "",
       "outcomes": [
         "Настройте проверки и создание билдов"
@@ -1684,7 +1684,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/courses/design-core-1.webp",
       "url": "",
       "outcomes": [
         "Цель, действия игрока и игровой цикл"
@@ -1702,7 +1702,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/courses/design-core-2.webp",
       "url": "",
       "outcomes": [
         "Экономика, сложность и рост возможностей"
@@ -1720,7 +1720,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/courses/design-core-3.webp",
       "url": "",
       "outcomes": [
         "Пространство, навигация и обучение игрока"
@@ -1738,7 +1738,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/courses/design-applied-1.webp",
       "url": "",
       "outcomes": [
         "Проверьте игровую идею небольшим прототипом"
@@ -1756,7 +1756,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/design.svg",
+      "image": "assets/mastery/courses/design-applied-2.webp",
       "url": "",
       "outcomes": [
         "Постройте уровень и проведите плейтест"
@@ -1774,7 +1774,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/courses/ui-core-1.webp",
       "url": "",
       "outcomes": [
         "Иерархия, контраст и читаемость"
@@ -1792,7 +1792,7 @@ window.MASTERY_SEED = {
       "level": "beginner",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/courses/ui-core-2.webp",
       "url": "",
       "outcomes": [
         "Состояния кнопок, панели и обратная связь"
@@ -1810,7 +1810,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 3,
       "published": true,
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/courses/ui-core-3.webp",
       "url": "",
       "outcomes": [
         "Масштабирование и разные способы ввода"
@@ -1828,7 +1828,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 1,
       "published": true,
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/courses/ui-applied-1.webp",
       "url": "",
       "outcomes": [
         "Слоты, подсказки и взаимодействия"
@@ -1846,7 +1846,7 @@ window.MASTERY_SEED = {
       "level": "intermediate",
       "order": 2,
       "published": true,
-      "image": "assets/mastery/ui.svg",
+      "image": "assets/mastery/courses/ui-applied-2.webp",
       "url": "",
       "outcomes": [
         "Экраны, переходы и настройки"
