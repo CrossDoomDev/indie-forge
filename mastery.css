@@ -89,3 +89,9 @@
 .m-course-link:focus-visible{outline:3px solid #ffad5d;outline-offset:-3px}
 .m-course-link .m-card-title{margin:0;color:#f4f7fc;cursor:inherit}
 .m-course-copy{display:flex;flex-direction:column}.m-course-meta{margin-top:auto;padding-top:14px}.m-course-progress{margin-top:12px;font-size:12px}.m-course-progress progress{width:110px;height:8px}
+
+/* Fade within the artwork itself, so its edge cannot form a hard seam. */
+.m-hero:before{-webkit-mask-image:linear-gradient(90deg,transparent 0%,#0002 18%,#0008 42%,#000e 68%,#000 90%);mask-image:linear-gradient(90deg,transparent 0%,#0002 18%,#0008 42%,#000e 68%,#000 90%)}
+.m-tech-hero:before{left:auto;width:min(62%,860px);background-size:cover;background-position:center;opacity:.9}
+.m-tech-hero:after{background:linear-gradient(90deg,#04131f 15%,#04131fcc 43%,#04131f40 78%,#04131f26),linear-gradient(0deg,#04131f55,transparent 30%,transparent 80%,#04131f22)}
+@media(max-width:620px){.m-tech-hero:before{width:100%;opacity:.55}.m-tech-hero:after{background:linear-gradient(90deg,#04131ff2,#04131fb3 65%,#04131f73)}}
