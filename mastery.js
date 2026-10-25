@@ -26,7 +26,7 @@
   const tags=(values,cls='')=>`<div class="m-tags ${cls}">${values.map(v=>`<span>${esc(v)}</span>`).join('')}</div>`;
   function logo(t,large=false) {
     const branded=['godot','gamemaker','blender','aseprite','unity','web','csharp'].includes(t.icon);
-    const fallback={rpgmaker:'home',pixelart:'gem',audio:'play',tools:'refresh',design:'game',ui:'monitor'}[t.icon]||'tree';
+    const fallback={rpgmaker:'home',pixelart:'pencil',audio:'play',tools:'refresh',design:'game',ui:'monitor'}[t.icon]||'tree';
     return `<span class="m-logo ${large?'large':''}" style="--brand:${t.color}" aria-hidden="true">${t.iconUrl?`<img class="m-custom-icon" src="${esc(t.iconUrl)}" alt="">`:branded?`<span class="m-brand-icon" style="mask-image:url('assets/mastery/logo-${t.icon}.svg');-webkit-mask-image:url('assets/mastery/logo-${t.icon}.svg')"></span>`:icon(fallback)}</span>`;
   }
   function breadcrumbs(t,branch,course) {
