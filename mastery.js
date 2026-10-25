@@ -33,7 +33,7 @@
     return `<nav class="m-breadcrumbs" aria-label="Путь по древу мастерства"><a href="${routeFor()}">Древо мастерства</a>${t?`<span>›</span><a href="${routeFor(t.id)}">${esc(t.title)}</a>`:''}${branch?`<span>›</span><a href="${routeFor(t.id,branch)}">${store.branches[branch]}</a>`:''}${course?`<span>›</span><span aria-current="page">${esc(course.title)}</span>`:''}</nav>`;
   }
   function hero({title,description,t=null,branch='',course=null,art=true}) {
-    const image=course?.image||t?.image||'assets/hero.png';
+    const image=course?.image||t?.image||'assets/hero.webp';
     return `<header class="m-hero ${t?'m-tech-hero':''} ${art?'':'m-hero-plain'}" style="--hero:${esc('url('+JSON.stringify(image)+')')}">${t?breadcrumbs(t,branch,course):'<span class="m-kicker">ИНДИ КУЗНИЦА · ТВОЙ ПУТЬ В ГЕЙМДЕВЕ</span>'}<div class="m-hero-main">${t?logo(t,true):`<span class="m-tree-emblem">${icon('tree')}</span>`}<div><h1 tabindex="-1">${esc(title)}</h1><p>${esc(description)}</p></div></div>${t?tags(t.tags):'<span class="m-hero-motto">Разные инструменты.<br>Одна цель — твои игры.</span>'}</header>`;
   }
   function utility() {
