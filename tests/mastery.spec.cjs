@@ -1,5 +1,29 @@
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
+
+test('home mastery preview follows published catalogue order, hides drafts and opens technology pages',async({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.home-mastery-summary')).toHaveText('13 технологий · 85 курсов');
+ await expect(page.locator('.home-tech')).toHaveCount(3);
+ await page.locator('.home-tech').first().click();await expect(page).toHaveURL(/#\/mastery\/godot$/);
+ await Promise.all([page.waitForURL(url=>!url.hash),page.locator('.sidebar a[href="./"]').click()]);
+ await page.evaluate(()=>{
+  localStorage.setItem('indieforge.mastery.admin','true');
+  const data=MasteryCatalog.snapshot();
+  MasteryCatalog.saveTechnology({...data.technologies.find(t=>t.id==='godot'),published:false});
+  MasteryCatalog.saveTechnology({...data.technologies.find(t=>t.id==='blender'),order:0});
+  MasteryCatalog.saveCourse({...data.courses.find(c=>c.id==='gamemaker-core-1'),published:false});
+ });
+ await page.reload();
+ await expect(page.locator('.home-mastery-summary')).toHaveText('12 технологий · 59 курсов');
+ await expect(page.locator('.home-tech').first()).toHaveAttribute('href','#/mastery/blender');
+ await expect(page.locator('.home-tech[href="#/mastery/godot"]')).toHaveCount(0);
+ await page.locator('.mastery-panel .text-link').click();await expect(page).toHaveURL(/#\/mastery$/);
+ await Promise.all([page.waitForURL(url=>!url.hash),page.locator('.sidebar a[href="./"]').click()]);
+ await page.evaluate(()=>{for(const t of MasteryCatalog.snapshot().technologies)MasteryCatalog.saveTechnology({...t,published:false});});
+ await expect(page.locator('.home-mastery-summary')).toHaveText('0 технологий · 0 курсов');
+ await expect(page.locator('.home-tech')).toHaveCount(0);await expect(page.locator('.home-mastery-empty')).toBeVisible();
+});
 const catalogue=page=>page.evaluate(()=>window.MasteryCatalog.snapshot());
 async function manager(page,tab='courses'){
  await page.locator('[data-mode=admin]').click();

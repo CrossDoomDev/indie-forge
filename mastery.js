@@ -162,11 +162,20 @@
     if(course&&parts[4]==='learn'&&(parts.length===5||(parts.length===6&&course.curriculum?.lessons.some(l=>l.id===parts[5]))))return {kind:'learn',tech,course,lessonId:parts[5]};
     return {kind:'missing'};
   }
+  function renderHomeMastery() {
+    const target=document.querySelector('#homeMastery');
+    if(!target)return;
+    const technologies=ordered(catalog.technologies.filter(t=>t.published));
+    const ids=new Set(technologies.map(t=>t.id));
+    const courses=catalog.courses.filter(c=>c.published&&ids.has(c.technologyId));
+    target.innerHTML=`<p class="home-mastery-summary">${icon('tree')}<span>${technologies.length} ${plural(technologies.length,['технология','технологии','технологий'])} · ${courseCount(courses.length)}</span></p>${technologies.length?`<div class="home-tech-grid">${technologies.slice(0,3).map(t=>`<a class="home-tech" href="${routeFor(t.id)}" aria-label="Изучать ${esc(t.title)}"><img src="${esc(t.image)}" alt="" loading="lazy" decoding="async">${logo(t)}<strong>${esc(t.title)}</strong></a>`).join('')}</div><div class="home-mastery-branches"><span>${icon('book')}<span><strong>Основные курсы</strong><small>От первых шагов к основам</small></span></span><span>${icon('game')}<span><strong>Прикладные курсы</strong><small>Практика и свои проекты</small></span></span></div>`:'<p class="home-mastery-empty">Технологии и курсы появятся здесь после публикации.</p>'}`;
+  }
   function render(scroll=false) {
     if(drag)clearDrag();
     if(workspace&&!flushWorkspace()){history.replaceState(null,'',workspace.hash);return;}
     workspace=null;
     catalog=store.snapshot();current=parseRoute();
+    renderHomeMastery();
     const active=current.kind!=='home';
     document.querySelector('.dashboard').hidden=active;page.hidden=!active;
     document.querySelectorAll('.sidebar .nav-item').forEach(link=>{const selected=active?link.matches('[data-open-mastery]'):link.matches('a[href="./"]');link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');});
